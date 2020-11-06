@@ -1,4 +1,4 @@
-;;; init.el --- Its my init
+;;; init.el --- Its my init  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
 
@@ -10,7 +10,7 @@
   (package-install 'use-package))
 
 ;; Custom file initialization
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (unless (file-exists-p custom-file)
   (write-region "" "" custom-file))
 (load custom-file)
@@ -20,6 +20,7 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (setq frame-resize-pixelwise t)
+(set-frame-font "Inconsolata 12")
 
 ;; indentation
 (setq-default indent-tabs-mode nil)
@@ -27,121 +28,67 @@
 (setq-default c-basic-offset 4)
 (setq-default c-default-style "stroustrup")
 
+;; usepackage conifg
+(setq-default use-package-always-ensure t)
+
+(use-package diminish)
+
 ;; Packages
 (use-package solarized-theme
-  :ensure t
-  :config (load-theme 'solarized-light t))
-
-(use-package ivy
-  :ensure t
-  :config
-  (ivy-mode 1))
-
-(use-package swiper
-  :ensure t
-  :bind ("C-s" . swiper-isearch))
-
-(use-package counsel
-  :ensure t
-  :bind ("M-x" . counsel-M-x))
+  :init
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (select-frame frame)
+                  (load-theme 'solarized-dark t)))
+    (load-theme 'solarized-dark t)))
 
 (use-package avy
-  :ensure t
-  :bind (("C-:" . avy-goto-char)
-         ("C-;" . avy-goto-char-timer)))
+  :bind (("C-;" . avy-goto-char-timer)))
 
 (use-package ace-window
-  :ensure t
   :bind ("M-o" . ace-window)
   :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
-
-(use-package magit
-  :ensure t)
-
-(use-package vue-mode
-  :ensure t)
+(use-package magit)
 
 (use-package smartparens
-  :ensure t
   :hook (lisp-mode . smartparens-strict-mode)
   :config
   (require 'smartparens-config))
 
 (use-package company
-  :ensure t
+  :diminish company-mode
   :config
   (global-company-mode 1))
 
-(use-package qml-mode
-  :ensure t)
-(use-package company-qml
-  :ensure t)
-
-(use-package julia-mode
-  :ensure t)
-
-(use-package rtags
-  :ensure t)
-
-(use-package irony
-  :ensure t
-  :hook ((c++-mode . irony-mode)
-         (c-mode . irony-mode)))
-
-(use-package flycheck-irony
-  :ensure t
-  :config (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup)))
+(use-package julia-mode)
 
 (use-package flycheck
-  :ensure t
+  :diminish flycheck-mode
   :config (global-flycheck-mode 1))
 
 (use-package which-key
-  :ensure t
+  :diminish which-key-mode
   :config
   (which-key-mode 1))
 
 ;; LSP Stuff
-(use-package lsp-mode
-  :ensure t)
-(use-package lsp-ui
-  :ensure t)
-(use-package lsp-haskell
-  :ensure t
-  :hook (haskell-mode . lsp))
-(use-package lsp-ivy
-  :ensure t)
-
-;; Evil Mode
-(use-package evil
-  :ensure t
-  :init
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode 1))
-
-(use-package evil-collection
-  :ensure t
-  :config
-  (evil-collection-init))
+(use-package lsp-mode)
+(use-package lsp-ui)
 
 ;; org mode
 (use-package org-roam
-  :ensure t
   :custom (org-roam-directory "~/org/"))
 ;; projectile
 
 (use-package projectile
-  :ensure t
+  :diminish projectile-mode
   :config
   (projectile-mode 1))
+
 ;; Hooks
 (add-hook 'before-save-hook 'whitespace-cleanup)
-
-;; slime
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "sbcl")
 
 ;; backups
 (defvar pks/backup-directory (concat user-emacs-directory "backups/"))
