@@ -20,7 +20,7 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (setq frame-resize-pixelwise t)
-(set-frame-font "Inconsolata 12")
+(set-frame-font "Inconsolata 14")
 
 ;; indentation
 (setq-default indent-tabs-mode nil)
@@ -29,7 +29,7 @@
 (setq-default c-default-style "stroustrup")
 
 ;; usepackage conifg
-(setq-default use-package-always-ensure t)
+(setq use-package-always-ensure t)
 
 (use-package diminish)
 
@@ -47,8 +47,7 @@
   :bind (("C-;" . avy-goto-char-timer)))
 
 (use-package ace-window
-  :bind ("M-o" . ace-window)
-  :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+  :bind ("M-o" . ace-window))
 
 (use-package magit)
 
@@ -63,6 +62,7 @@
   (global-company-mode 1))
 
 (use-package julia-mode)
+(use-package yaml-mode)
 
 (use-package flycheck
   :diminish flycheck-mode
@@ -80,13 +80,31 @@
 ;; org mode
 (use-package org-roam
   :custom (org-roam-directory "~/org/"))
-;; projectile
 
+;; projectile
 (use-package projectile
   :diminish projectile-mode
   :config
   (projectile-mode 1))
 
+;; helm
+(use-package helm
+  :diminish helm-mode
+  :bind (("M-x" . helm-M-x)
+         ("C-x f" . helm-find-files)
+         ("C-x C-f" . helm-find-files)
+         ("C-x b" . helm-buffers-list))
+  :config
+  (helm-mode 1)
+  (add-to-list 'display-buffer-alist
+               `("*.*Helm.*"
+                 (display-buffer-in-side-window)
+                 (inhibit-same-window . t)
+                 (side . bottom)
+                 (window-height . 0.3))))
+
+(use-package helm-swoop
+  :bind ("C-s" . helm-swoop))
 ;; Hooks
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
@@ -114,6 +132,43 @@
 
 ;; y-or-n alias
 (defalias 'yes-or-no-p 'y-or-n-p)
+
+
+;; elixir
+(use-package elixir-mode
+  :hook (elixir-mode-hook . lsp))
+
+(use-package alchemist)
+
+;; javascript/typescript/etc
+(defun setup-tide-mode ()
+  "Setup tide-mode."
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+(use-package web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  (add-hook 'web-mode-hook
+          (lambda ()
+            (when (string-equal "tsx" (file-name-extension buffer-file-name))
+              (setup-tide-mode))))
+  (flycheck-add-mode 'typescript-tslint 'web-mode))
+
+(use-package tide
+  :ensure t
+  :after (typescript-mode company flycheck)
+  :hook ((typescript-mode . tide-setup)
+         (typescript-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
 
 (provide 'init)
 ;;; init.el ends here
