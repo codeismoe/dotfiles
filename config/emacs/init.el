@@ -29,6 +29,7 @@
 (setq-default c-default-style "stroustrup")
 
 ;; usepackage conifg
+(require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
 (use-package diminish)
@@ -61,7 +62,18 @@
   :config
   (global-company-mode 1))
 
-(use-package julia-mode)
+(use-package julia-mode
+  :config
+  (setenv "JULIA_NUM_THREADS"
+          ;; get # of threads
+          (let ((string (car (cl-remove-if-not
+                              (lambda (x)
+                                (let ((match (string-match-p "^CPU" x)))
+                                  (and match (= match 0))))
+                              (process-lines "lscpu")))))
+            (string-match "\\([0-9]+\\)" string)
+            (match-string 0 string))))
+
 (use-package yaml-mode)
 
 (use-package flycheck
@@ -140,6 +152,8 @@
 
 (use-package alchemist)
 
+;; erlang
+(use-package erlang)
 ;; javascript/typescript/etc
 (defun setup-tide-mode ()
   "Setup tide-mode."
