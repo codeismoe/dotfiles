@@ -25,8 +25,8 @@
 ;; indentation
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-(setq-default c-basic-offset 4)
-(setq-default c-default-style "stroustrup")
+(setq-default c-basic-offset 2)
+(setq-default c-default-style "linux")
 
 ;; usepackage conifg
 (require 'use-package-ensure)
@@ -64,6 +64,7 @@
 
 (use-package julia-mode
   :config
+  (require 'julia-mode)
   (setenv "JULIA_NUM_THREADS"
           ;; get # of threads
           (let ((string (car (cl-remove-if-not
@@ -73,6 +74,10 @@
                               (process-lines "lscpu")))))
             (string-match "\\([0-9]+\\)" string)
             (match-string 0 string))))
+(use-package julia-repl
+  :hook (julia-mode . julia-repl-mode)
+  :config
+  (require 'julia-repl))
 
 (use-package yaml-mode)
 
@@ -183,6 +188,17 @@
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
+
+;; lisp
+(load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; Replace "sbcl" with the path to your implementation
+(setq inferior-lisp-program "sbcl")
+
+;; python stuff
+(setq python-shell-interpreter "python3")
+
+;; c++ stuff
+(add-hook 'c++-mode-hook 'lsp)
 
 (provide 'init)
 ;;; init.el ends here
