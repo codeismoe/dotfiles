@@ -20,7 +20,7 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (setq frame-resize-pixelwise t)
-(set-frame-font "Inconsolata 14")
+(set-frame-font "Inconsolata 16")
 
 ;; indentation
 (setq-default indent-tabs-mode nil)
@@ -188,11 +188,6 @@
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
-
-;; lisp
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
-;; Replace "sbcl" with the path to your implementation
-(setq inferior-lisp-program "sbcl")
 
 ;; python stuff
 (setq python-shell-interpreter "python3")
