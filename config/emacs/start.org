@@ -1,0 +1,207 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Peter <pks@codeis.moe>
+
+* Melpa
+  #+begin_src emacs-lisp
+    (require 'package)
+    (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+    (package-initialize)
+  #+end_src
+
+* Use Package/Package Initialization
+  Install use package, if it isn't installed, also refresh contents.
+  #+begin_src emacs-lisp
+    (unless (package-installed-p 'use-package)
+      (package-refresh-contents)
+      (package-install 'use-package))
+  #+end_src
+  Configure use package to *always* install packages
+  #+begin_src emacs-lisp
+    (require 'use-package-ensure)
+    (setq use-package-always-ensure t)
+  #+end_src
+** Diminish Mode
+   Use diminish mode to avoid clutter in the mode line
+   #+begin_src emacs-lisp
+     (use-package diminish)
+   #+end_src
+* Custom Files
+  We use set emacs =custom-file= to a location outside of git. We
+  also create it and load it
+  #+begin_src emacs-lisp
+    (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+    (unless (file-exists-p custom-file)
+      (write-region "" "" custom-file))
+    (load custom-file)
+  #+end_src
+* Backups and Lockfiles
+  Backup and lockfile configuration
+  #+begin_src emacs-lisp
+    (defvar pks/backup-directory (concat user-emacs-directory "backups/"))
+    (defvar pks/autosave-directory (concat user-emacs-directory "autosaves/"))
+
+    (unless (file-exists-p pks/backup-directory)
+      (make-directory pks/backup-directory))
+
+    (unless (file-exists-p pks/autosave-directory)
+      (make-directory pks/autosave-directory))
+
+    (setq backup-directory-alist `(("." . ,pks/backup-directory)))
+    (setq make-backup-files t
+          backup-by-copying t
+          version-control t
+          delete-old-versions t
+          kept-new-versions 9
+          auto-save-default 20
+          auto-save-interval 200)
+
+    (setq auto-save-file-name-transforms `((".*" ,pks/autosave-directory t)))
+    (setq create-lockfiles nil)
+  #+end_src
+* Aesthetics
+  - Setup a minimal environment. No tool bar, no menu bar, nor a scroll bar.
+  - Ensure frames resize pixelwise
+  - Set font
+  #+begin_src emacs-lisp
+    (tool-bar-mode -1)
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1)
+    (setq frame-resize-pixelwise t)
+    (set-frame-font "Inconsolata 16")
+  #+end_src
+
+** Theme
+   #+begin_src emacs-lisp
+     (use-package solarized-theme
+       :init
+       ;; Not currently used
+       ;; (if (daemonp)
+       ;;     (add-hook 'after-make-frame-functions
+       ;;               (lambda (frame)
+       ;;                 (select-frame frame)
+       ;;                 (load-theme 'solarized-dark t)))
+       (load-theme 'solarized-light t)
+       ;; )
+       )
+   #+end_src
+* Movement and Projects
+** Avy
+   I only use =avy-goto-char-timer= but its super useful
+   #+begin_src emacs-lisp
+  (use-package avy
+    :bind ("C-;" . avy-goto-char-timer))
+   #+end_src
+** Ace Window
+   Ace window allows quick window swapping. Using EXWM, scope
+   =ace-window= to a frame.
+   #+begin_src emacs-lisp
+     (use-package ace-window
+       :bind ("M-o" . ace-window)
+       :config (setq aw-scope 'frame))
+   #+end_src
+** Projectile
+   #+begin_src emacs-lisp
+     (use-package projectile
+       :diminish projectile-mode
+       :config
+       (projectile-mode 1))
+   #+end_src
+* Helm
+  I use helm. Why over ivy? No particular reason.
+
+  Set up a =display-buffer-alist= rule to force helm to the bottom, so
+  its more like ivy.
+  #+begin_src emacs-lisp
+    (use-package helm
+      :diminish helm-mode
+      :bind (("M-x" . helm-M-x)
+             ("C-x f" . helm-find-files)
+             ("C-x C-f" . helm-find-files)
+             ("C-x b" . helm-buffers-list))
+      :config
+      (helm-mode 1)
+      (add-to-list 'display-buffer-alist
+                   `("*.*Helm.*"
+                     (display-buffer-in-side-window)
+                     (inhibit-same-window . t)
+                     (side . bottom)
+                     (window-height . 0.3))))
+  #+end_src
+* Org
+** Roam
+   #+begin_src emacs-lisp
+     (use-package org-roam
+       :custom (org-roam-directory "~/org/"))
+   #+end_src
+* Languages
+** Julia
+   #+begin_src emacs-lisp
+     (use-package julia-mode
+       :config
+       (require 'julia-mode)
+       (setenv "JULIA_NUM_THREADS"
+               ;; get # of threads
+               (let ((string (car (cl-remove-if-not
+                                   (lambda (x)
+                                     (let ((match (string-match-p "^CPU" x)))
+                                       (and match (= match 0))))
+                                   (process-lines "lscpu")))))
+                 (string-match "\\([0-9]+\\)" string)
+                 (match-string 0 string))))
+     (use-package julia-repl
+       :hook (julia-mode . julia-repl-mode)
+       :config
+       (require 'julia-repl))
+   #+end_src
+** C/C++
+   #+begin_src emacs-lisp
+     (setq-default indent-tabs-mode nil
+                   tab-width 4
+                   c-basic-offset 2
+                   c-default-style "linux")
+   #+end_src
+** Common Lisp
+   #+begin_src emacs-lisp
+     (use-package slime
+       :config
+       (setq inferior-lisp-program "sbcl"))
+   #+end_src
+* Other
+** Which Key
+   #+begin_src emacs-lisp
+     (use-package which-key
+       :diminish which-key-mode
+       :config
+       (which-key-mode 1))
+   #+end_src
+** Flycheck
+   #+begin_src emacs-lisp
+     (use-package flycheck
+       :diminish flycheck-mode
+       :config (global-flycheck-mode 1))
+   #+end_src
+** Company Mode
+   #+begin_src emacs-lisp
+     (use-package company
+       :diminish company-mode
+       :config
+       (global-company-mode 1))
+   #+end_src
+** Smart Parens Mode
+   Use paredit mode
+   #+begin_src emacs-lisp
+     (use-package smartparens
+       :hook (lisp-mode . smartparens-strict-mode)
+       :config
+       (require 'smartparens-config)
+       (sp-use-paredit-bindings))
+   #+end_src
+** Magit
+   #+begin_src emacs-lisp
+     (use-package magit
+       :bind ("C-x g" . magit-status))
+   #+end_src
+* Aliases
+#+begin_src emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+end_src
