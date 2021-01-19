@@ -72,15 +72,16 @@
 
 ** Theme
    #+begin_src emacs-lisp
-     (use-package solarized-theme
+     (use-package tao-theme
        :init
+       (setq tao-theme-use-sepia nil)
        ;; Not currently used
        ;; (if (daemonp)
        ;;     (add-hook 'after-make-frame-functions
        ;;               (lambda (frame)
        ;;                 (select-frame frame)
        ;;                 (load-theme 'solarized-dark t)))
-       (load-theme 'solarized-light t)
+       (load-theme 'tao-yang t)
        ;; )
        )
    #+end_src
@@ -128,6 +129,16 @@
                      (window-height . 0.3))))
   #+end_src
 * Org
+** General Write
+   Setup some general niceties for writing in org mode.
+   #+begin_src emacs-lisp
+     (use-package org
+       :hook (visual-line-mode flyspell-mode))
+     (use-package adaptive-wrap
+       :hook (visual-line-mode . adaptive-fill-mode))
+     (use-package writeroom-mode
+       :bind ("<f11>" . writeroom-mode))
+   #+end_src
 ** Roam
    #+begin_src emacs-lisp
      (use-package org-roam
@@ -202,6 +213,6 @@
        :bind ("C-x g" . magit-status))
    #+end_src
 * Aliases
-#+begin_src emacs-lisp
+  #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
-#+end_src
+  #+end_src
