@@ -72,18 +72,9 @@
 
 ** Theme
    #+begin_src emacs-lisp
-     (use-package tao-theme
+     (use-package leuven-theme
        :init
-       (setq tao-theme-use-sepia nil)
-       ;; Not currently used
-       ;; (if (daemonp)
-       ;;     (add-hook 'after-make-frame-functions
-       ;;               (lambda (frame)
-       ;;                 (select-frame frame)
-       ;;                 (load-theme 'solarized-dark t)))
-       (load-theme 'tao-yang t)
-       ;; )
-       )
+       (load-theme 'leuven t))
    #+end_src
 * Movement and Projects
 ** Avy
@@ -105,7 +96,8 @@
      (use-package projectile
        :diminish projectile-mode
        :config
-       (projectile-mode 1))
+       (projectile-mode 1)
+       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
    #+end_src
 * Helm
   I use helm. Why over ivy? No particular reason.
@@ -133,9 +125,10 @@
    Setup some general niceties for writing in org mode.
    #+begin_src emacs-lisp
      (use-package org
-       :hook (visual-line-mode flyspell-mode))
-     (use-package adaptive-wrap
-       :hook (visual-line-mode . adaptive-fill-mode))
+       :hook ((org-mode . org-indent-mode)
+              (org-mode . visual-line-mode)
+              (org-mode . flyspell-mode)))
+
      (use-package writeroom-mode
        :bind ("<f11>" . writeroom-mode))
    #+end_src
@@ -177,6 +170,21 @@
        :config
        (setq inferior-lisp-program "sbcl"))
    #+end_src
+** ESS
+#+begin_src emacs-lisp
+  (use-package ess)
+#+end_src
+** EIN
+#+begin_src emacs-lisp
+  (use-package ein
+    :config
+    (setq ein:output-area-inlined-images t))
+#+end_src
+** Clojure
+#+begin_src emacs-lisp
+  (use-package cider)  
+#+end_src
+
 * Other
 ** Which Key
    #+begin_src emacs-lisp
