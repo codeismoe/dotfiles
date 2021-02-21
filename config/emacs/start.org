@@ -83,6 +83,7 @@
   (use-package avy
     :bind ("C-;" . avy-goto-char-timer))
    #+end_src
+   
 ** Ace Window
    Ace window allows quick window swapping. Using EXWM, scope
    =ace-window= to a frame.
@@ -91,6 +92,7 @@
        :bind ("M-o" . ace-window)
        :config (setq aw-scope 'frame))
    #+end_src
+   
 ** Projectile
    #+begin_src emacs-lisp
      (use-package projectile
@@ -99,6 +101,14 @@
        (projectile-mode 1)
        (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
    #+end_src
+
+** Direnv
+#+begin_src emacs-lisp
+  (use-package direnv
+    :config
+    (direnv-mode))
+#+end_src
+
 * Helm
   I use helm. Why over ivy? No particular reason.
 
@@ -207,7 +217,6 @@
   (use-package lsp-haskell
     :hook ((haskell-mode . lsp)))
 #+end_src
-
 
 * Other
 ** Which Key
