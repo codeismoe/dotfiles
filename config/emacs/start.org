@@ -153,7 +153,11 @@
     :init (setq lsp-keymap-prefix "C-c l")
     :hook ((lsp-mode . lsp-enable-which-key-integration))
     :commands lsp)
-  (use-package lsp-ui :commands lsp-ui-mode)
+
+  (use-package lsp-ui
+    :commands lsp-ui-mode
+    :config
+    (setq-default lsp-headerline-breadcrumb-mode nil))
   (use-package helm-lsp :commands helm-lsp-workspace-symbol)
   (use-package dap-mode)
 #+end_src
@@ -212,10 +216,14 @@
 #+end_src
 ** Haskell
 #+begin_src emacs-lisp
-  (use-package haskell-mode)
-
-  (use-package lsp-haskell
+  (use-package haskell-mode
     :hook ((haskell-mode . lsp)))
+  (use-package lsp-haskell)
+#+end_src
+** Nix
+#+begin_src emacs-lisp
+  (use-package nix-mode
+    :mode "\\.nix\\'")
 #+end_src
 
 * Other
