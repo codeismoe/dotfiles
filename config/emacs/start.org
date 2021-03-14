@@ -72,9 +72,9 @@
 
 ** Theme
    #+begin_src emacs-lisp
-     (use-package leuven-theme
+     (use-package monokai-theme
        :init
-       (load-theme 'leuven t))
+       (load-theme 'monokai t))
    #+end_src
 * Movement and Projects
 ** Avy
@@ -225,6 +225,20 @@
   (use-package nix-mode
     :mode "\\.nix\\'")
 #+end_src
+** Python
+#+begin_src emacs-lisp
+  (use-package pyenv-mode)
+  (use-package python-mode
+    :hook ((python-mode . lsp)))
+      
+#+end_src
+** Elixir
+#+begin_src emacs-lisp
+  (use-package alchemist)
+  (use-package mix)
+  (use-package elixir-mode
+    :hook (elixir-mode . lsp))
+#+end_src
 
 * Other
 ** Which Key
@@ -261,6 +275,15 @@
      (use-package magit
        :bind ("C-x g" . magit-status))
    #+end_src
+** YASnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :config
+    (yas-global-mode))
+
+  (use-package yasnippet-snippets)
+#+end_src
 * Aliases
   #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
