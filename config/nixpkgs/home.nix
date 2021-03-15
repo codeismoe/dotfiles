@@ -6,6 +6,9 @@ let
     networkmanagerapplet
     nitrogen
   ];
+  otherPkgs = with pkgs; [
+    spotify
+  ];
 in
 {
 
@@ -26,13 +29,26 @@ in
     firefox.enable = true;
   };
 
-  home.packages = xmonadPkgs;
+  home.packages = xmonadPkgs ++ otherPkgs;
   home.username = "pks";
   home.homeDirectory = "/home/pks";
   home.sessionVariables = { 
     EDITOR="vim"; 
   };
 
+  services.lorri.enable = true;
+
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Qogir";
+      package = pkgs.qogir-icon-theme;
+    };
+    theme = {
+      name = "Matcha";
+      package = pkgs.matcha-gtk-theme;
+    };
+  };
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
   # when a new Home Manager release introduces backwards

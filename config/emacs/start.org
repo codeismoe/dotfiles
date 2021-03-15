@@ -67,7 +67,6 @@
     (menu-bar-mode -1)
     (scroll-bar-mode -1)
     (setq frame-resize-pixelwise t)
-    (set-frame-font "Inconsolata 16")
   #+end_src
 
 ** Theme
@@ -76,6 +75,7 @@
        :init
        (load-theme 'monokai t))
    #+end_src
+* 
 * Movement and Projects
 ** Avy
    I only use =avy-goto-char-timer= but its super useful

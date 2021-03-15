@@ -4,4 +4,5 @@
   ./rofi
   ./xmonad
   ./alacritty
+  ./emacs
 ]

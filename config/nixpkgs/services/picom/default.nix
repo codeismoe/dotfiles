@@ -2,12 +2,10 @@
   services.picom = {
     enable = true;
     activeOpacity = "1.0";
-    inactiveOpacity = "0.8";
+    inactiveOpacity = "1.0";
     backend = "glx";
-    fade = true;
-    fadeDelta = 5;
-    shadow = true;
-    shadowOpacity = "0.75";
+    fade = false;
+    shadow = false;
   };
 }
 
