@@ -2,6 +2,7 @@
 import XMonad
 import XMonad.Config.Desktop
 import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.ManageDocks
 import XMonad.Actions.DynamicProjects
 import XMonad.Util.EZConfig
 import Graphics.X11.Types
@@ -10,7 +11,7 @@ appLauncher  = "rofi -modi drun,ssh,window -show drun -show-icons"
 
 main :: IO ()
 main = do
-  xmonad $ ewmh $ desktopConfig
+  xmonad $ docks $ ewmh $ desktopConfig
     { terminal = "alacritty"
     , modMask = mod4Mask
     , borderWidth = 3

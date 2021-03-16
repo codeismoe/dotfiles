@@ -8,6 +8,14 @@ let
   ];
   otherPkgs = with pkgs; [
     spotify
+    slack
+    discord
+    
+    pavucontrol
+    qutebrowser
+    tmux
+
+    gimp
   ];
 in
 {
@@ -16,7 +24,7 @@ in
   programs.home-manager.enable = true;
   nixpkgs.config.allowUnfree = true;
 
-  imports = (import ./programs) ++ (import ./services); 
+  imports = (import ./programs); 
   xdg.enable = true;
   news.display = "silent";
   
