@@ -1,4 +1,4 @@
-stow: nixpkgs
+stow: nixpkgs nvim
 
 
 emacs:
@@ -9,5 +9,9 @@ nixpkgs:
 	if test ! -d $(HOME)/.nixpkgs; then mkdir $(HOME)/.nixpkgs; fi
 	stow -Sv -d config/ -t $(HOME)/.nixpkgs nixpkgs
 
+nvim:
+	if test ! -d $(HOME)/.config/nvim; then mkdir -p $(HOME)/.config/nvim; fi
+	stow -Sv -d config/ -t $(HOME)/.config/nvim nvim
 
-.PHONY: stow  nixpkgs
+
+.PHONY: stow nixpkgs nvim
