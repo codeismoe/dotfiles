@@ -1,4 +1,4 @@
-stow: emacs nixpkgs taffybar
+stow: nixpkgs
 
 
 emacs:
@@ -6,7 +6,8 @@ emacs:
 	stow -Sv -d config/ -t $(HOME)/.config/emacs emacs
 
 nixpkgs:
-	if test ! -d $(HOME)/.config/nixpkgs; then mkdir $(HOME)/.config/nixpkgs; fi
-	stow -Sv -d config/ -t $(HOME)/.config/nixpkgs nixpkgs
+	if test ! -d $(HOME)/.nixpkgs; then mkdir $(HOME)/.nixpkgs; fi
+	stow -Sv -d config/ -t $(HOME)/.nixpkgs nixpkgs
 
-.PHONY: stow emacs nixpkgs taffybar
+
+.PHONY: stow  nixpkgs
