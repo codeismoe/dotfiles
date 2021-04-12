@@ -1,21 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  xmonadPkgs = with pkgs; [
-    networkmanager_dmenu
-    networkmanagerapplet
-    nitrogen
-  ];
   otherPkgs = with pkgs; [
-    spotify
-    slack
-    discord
-    
-    pavucontrol
-    qutebrowser
-    tmux
-
-    gimp
   ];
 in
 {
@@ -34,10 +20,9 @@ in
       enableFishIntegration = true;
       enableNixDirenvIntegration = true;
     };
-    firefox.enable = true;
   };
 
-  home.packages = xmonadPkgs ++ otherPkgs;
+  home.packages = otherPkgs;
   home.username = "pks";
   home.homeDirectory = "/home/pks";
   home.sessionVariables = { 

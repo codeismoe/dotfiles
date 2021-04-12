@@ -1,25 +1,10 @@
-call plug#begin()
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'sheerun/vim-polyglot'
-Plug 'tpope/vim-vinegar'
-Plug 'nvim-lua/completion-nvim'
-Plug 'nikvdp/neomux'
-Plug 'chriskempson/base16-vim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'nvim-lua/lsp_extensions.nvim'
-Plug 'honza/vim-snippets'
-Plug 'neoclide/coc-snippets'
-call plug#end()
 noremap <SPACE> <Nop>
 let mapleader = " "
 
 nmap <leader>gg :GFiles<CR>
 nmap <leader>gf :Files<CR>
 nmap <leader>gb :Buffers<CR>
-" Telescope
+
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
 omap <leader><tab> <plug>(fzf-maps-o)
