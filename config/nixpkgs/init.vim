@@ -15,7 +15,6 @@ set background=dark
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 set termguicolors
 syntax enable
-colorscheme base16-gruvbox-dark-pale
 
 hi Normal guibg=NONE ctermbg=NONE
 hi LineNr guibg=NONE ctermbg=NONE

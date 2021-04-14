@@ -98,8 +98,8 @@
           vim-polyglot
           vim-racket
           { 
-            plugin = base16-vim;
-            config = "colorscheme base16-gruvbox-dark-pale";
+            plugin = nord-vim;
+            config = "colorscheme nord";
           }
 
           tabular
