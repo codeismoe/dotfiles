@@ -22,7 +22,7 @@
 
   home-manager.users.pks = { pkgs, ...}: {
     home.sessionVariables = {
-      editor = "nvim";
+      EDITOR = "nvim";
     };
 
     home.packages = with pkgs; [
@@ -38,6 +38,7 @@
       ghc
       cabal-install
       fish
+      starship
       jq
       taskwarrior
       tasksh
@@ -65,24 +66,26 @@
 
     programs.fish = {
       enable = true;
-      interactiveShellInit = ''
-        set -g theme_nerd_fonts yes
-      '';
       promptInit = ''
         any-nix-shell fish --info-right | source
+        starship init fish | source
       '';
 
-      plugins = [
-        {
-          name = "theme-bobthefish";
-          src = pkgs.fetchFromGitHub {
-            owner = "oh-my-fish";
-            repo = "theme-bobthefish";
-            rev = "626bd39b002535d69e56adba5b58a1060cfb6d7b";
-            sha256 = "cd49e0a846601cb9a5cafa2254edccc094d216c603eeddd788feb233398c901b";
-          };
-        }
-      ];
+      plugins = [];
+    };
+
+    programs.starship = {
+      enable = true;
+      settings = {
+        nix.symbol = " ";
+        aws = { disabled=true; symbol = " "; };
+        git_branch.smbol = " ";
+        docker.symbol = " ";
+        python.symbol = " ";
+        elixir.symbol = " ";
+        package.symbol = " ";
+        rust.symbol = " ";
+      };
     };
 
     programs.neovim = {
@@ -115,17 +118,6 @@
           fzf-vim
 
           denite
-          taskwiki
-          {
-            plugin = vimwiki;
-            config = ''
-              let g:vimwiki_list = [{'path': '~/Documents/vimwiki/', 'syntax': 'markdown', 'ext': '.md'}]
-              let g:vimwiki_markdown_link_ext = 1
-              let g:taskwiki_markup_syntax_ext = 1
-              let g:markdown_folding = 1
-            '';
-          }
-
           vim-snippets
       ];
       extraConfig = (builtins.readFile ./init.vim);
