@@ -195,3 +195,5 @@ autocmd FileType htmldjango setlocal sw=2 ts=2 sts=2
 set fillchars+=vert:│
 hi VertSplit ctermbg=NONE guibg=NONE
 
+colorscheme nord
+

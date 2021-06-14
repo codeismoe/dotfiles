@@ -1,67 +1,71 @@
 { config, pkgs, ... }:
 
+let 
+   pkgs_x86 = import <nixpkgs> { localSystem = "x86_64-darwin"; };
+   pkgs_m1 = import <nixpkgs> { localSystem = "aarch64-darwin"; };
+in
 {
   imports = [ <home-manager/nix-darwin> ];
   home-manager.useUserPackages = true;
 
-  environment.systemPackages = [ pkgs.neovim pkgs.joplin-desktop pkgs.python39 ];
+  environment.systemPackages = [];
 
   fonts = {
     enableFontDir = true;
     fonts = [ pkgs.nerdfonts ];
   };
 
+  nix = {
+    allowedUsers = [ "pks" ];
+    package = pkgs.nix;
+    extraOptions = ''
+      extra-platforms = x86_64-darwin aarch64-darwin
+    '';
+  };
+
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
-  nix.package = pkgs.nix;
 
-  environment.shells = [ pkgs.fish ];
   environment.systemPath = [ /run/current-system/sw/bin ];
-  users.users.pks.shell = pkgs.bashInteractive;
   programs.fish.enable = true;
 
-  home-manager.users.pks = { pkgs, ...}: {
+  home-manager.users.pks = {pkgs, ...}: {
+    nixpkgs.overlays = [
+      (self: super: { inherit (pkgs_x86) reattach-to-user-namespace;  })
+    ];
     home.sessionVariables = {
       EDITOR = "nvim";
     };
 
-    home.packages = with pkgs; [
+    home.packages = (with pkgs; [
       darwin.apple_sdk.frameworks.Cocoa
-      racket-minimal
       direnv
-      elixir
-      nodejs
       python39Packages.pip
+      python39Packages.virtualenv
       python39Packages.pylint
-      python39Packages.tasklib
       python39Packages.pynvim
-      ghc
-      cabal-install
-      fish
-      starship
       jq
-      taskwarrior
-      tasksh
-      timewarrior
-      git
       gnupg
       ripgrep
       rustup
       any-nix-shell
       docker
       docker-compose
-    ];
+      ccls
+
+      nodejs
+    ]);
 
     programs.tmux = {
       enable = true;
-      escapeTime = 0;
+      package = pkgs_x86.tmux;
     };
 
     programs.git = {
       enable = true;
       userName = "Peter Steidel";
       userEmail = "pks@codeis.moe";
-      ignores = [ ".DS_Store" "*~" "*.swp" ];
+      ignores = [ ".DS_Store" "*~" "*.swp" ".vim"];
     };
 
     programs.fish = {
@@ -77,10 +81,10 @@
     programs.starship = {
       enable = true;
       settings = {
-        nix.symbol = " ";
+        nix_shell.symbol = " ";
         aws = { disabled=true; symbol = " "; };
-        git_branch.smbol = " ";
-        docker.symbol = " ";
+        git_branch.symbol = " ";
+        docker_context.symbol = " ";
         python.symbol = " ";
         elixir.symbol = " ";
         package.symbol = " ";
@@ -88,40 +92,31 @@
       };
     };
 
-    programs.neovim = {
-      enable = true;
-      withPython3 = true;
-      extraPython3Packages = ps: with ps; [ tasklib pynvim ];
-      withNodeJs = true;
-      plugins = with pkgs.vimPlugins; [
-          vinegar
-          vim-polyglot
-          vim-racket
-          { 
-            plugin = nord-vim;
-            config = "colorscheme nord";
-          }
+     programs.neovim = {
+        package = pkgs_x86.neovim-unwrapped;
+        enable = true;
+        withPython3 = true;
+        plugins = with pkgs.vimPlugins; [
+            vinegar
+            vim-polyglot
+            nord-vim
+            tabular
+            vim-markdown
+            vim-commentary
+            vim-airline
+            vim-airline-themes
+            vim-airline-clock
 
-          tabular
-          vim-markdown
-          vim-commentary
-          vim-airline
-          vim-airline-themes
-          vim-airline-clock
+            coc-nvim
+            coc-snippets
 
-          coc-nvim
-          coc-rls
-          coc-css
-          coc-git
-          coc-python
+            fzf-vim
 
-          fzf-vim
-
-          denite
-          vim-snippets
-      ];
-      extraConfig = (builtins.readFile ./init.vim);
-    };
+            denite
+            vim-snippets
+        ];
+        extraConfig = (builtins.readFile ./init.vim);
+     };
   };
 
   system.defaults = {
