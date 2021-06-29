@@ -20,11 +20,13 @@
     (require 'use-package-ensure)
     (setq use-package-always-ensure t)
   #+end_src
+
 ** Diminish Mode
    Use diminish mode to avoid clutter in the mode line
    #+begin_src emacs-lisp
      (use-package diminish)
    #+end_src
+
 * Custom Files
   We use set emacs =custom-file= to a location outside of git. We
   also create it and load it
@@ -34,6 +36,7 @@
       (write-region "" "" custom-file))
     (load custom-file)
   #+end_src
+
 * Backups and Lockfiles
   Backup and lockfile configuration
   #+begin_src emacs-lisp
@@ -58,6 +61,7 @@
     (setq auto-save-file-name-transforms `((".*" ,pks/autosave-directory t)))
     (setq create-lockfiles nil)
   #+end_src
+
 * Aesthetics
   - Setup a minimal environment. No tool bar, no menu bar, nor a scroll bar.
   - Ensure frames resize pixelwise
@@ -75,7 +79,7 @@
        :init
        (load-theme 'monokai t))
    #+end_src
-* 
+
 * Movement and Projects
 ** Avy
    I only use =avy-goto-char-timer= but its super useful
@@ -83,7 +87,7 @@
   (use-package avy
     :bind ("C-;" . avy-goto-char-timer))
    #+end_src
-   
+
 ** Ace Window
    Ace window allows quick window swapping. Using EXWM, scope
    =ace-window= to a frame.
@@ -92,7 +96,7 @@
        :bind ("M-o" . ace-window)
        :config (setq aw-scope 'frame))
    #+end_src
-   
+
 ** Projectile
    #+begin_src emacs-lisp
      (use-package projectile
@@ -107,6 +111,13 @@
   (use-package direnv
     :config
     (direnv-mode))
+#+end_src
+
+** Eyebrowse
+#+begin_src emacs-lisp
+  (use-package eyebrowse
+    :config
+    (eyebrowse-mode t))
 #+end_src
 
 * Helm
@@ -130,23 +141,23 @@
                      (side . bottom)
                      (window-height . 0.3))))
   #+end_src
+
 * Org
-** General Write
-   Setup some general niceties for writing in org mode.
+Setup some general niceties for writing in org mode.
    #+begin_src emacs-lisp
      (use-package org
        :hook ((org-mode . org-indent-mode)
               (org-mode . visual-line-mode)
-              (org-mode . flyspell-mode)))
+              (org-mode . flyspell-mode))
+       :config
+       (setq org-clock-persist 'history)
+       (setq org-agenda-files (directory-files-recursively "~/Documents/org/" "\\.org$"))
+       (org-clock-persistence-insinuate))
 
      (use-package writeroom-mode
        :bind ("<f11>" . writeroom-mode))
    #+end_src
-** Roam
-   #+begin_src emacs-lisp
-     (use-package org-roam
-       :custom (org-roam-directory "~/org/"))
-   #+end_src
+
 * LSP
 #+begin_src emacs-lisp
   (use-package lsp-mode
@@ -184,6 +195,7 @@
        :config
        (require 'julia-repl))
    #+end_src
+
 ** C/C++
    #+begin_src emacs-lisp
      (setq-default indent-tabs-mode nil
@@ -191,22 +203,26 @@
                    c-basic-offset 2
                    c-default-style "linux")
    #+end_src
+
 ** Common Lisp
    #+begin_src emacs-lisp
      (use-package slime
        :config
        (setq inferior-lisp-program "sbcl"))
    #+end_src
+
 ** ESS
 #+begin_src emacs-lisp
   (use-package ess)
 #+end_src
+
 ** EIN
 #+begin_src emacs-lisp
   (use-package ein
     :config
     (setq ein:output-area-inlined-images t))
 #+end_src
+
 ** Clojure
 #+begin_src emacs-lisp
   (use-package clojure-mode
@@ -214,24 +230,33 @@
   (use-package cider)
 
 #+end_src
+
 ** Haskell
 #+begin_src emacs-lisp
   (use-package haskell-mode
     :hook ((haskell-mode . lsp)))
   (use-package lsp-haskell)
 #+end_src
+
 ** Nix
 #+begin_src emacs-lisp
   (use-package nix-mode
     :mode "\\.nix\\'")
 #+end_src
+
 ** Python
 #+begin_src emacs-lisp
   (use-package pyenv-mode)
   (use-package python-mode
     :hook ((python-mode . lsp)))
-      
+
 #+end_src
+
+** Terraform
+#+begin_src emacs-lisp
+(use-package terraform-mode)
+#+end_src
+
 ** Elixir
 #+begin_src emacs-lisp
   (use-package alchemist)
@@ -248,19 +273,26 @@
        :config
        (which-key-mode 1))
    #+end_src
+
 ** Flycheck
    #+begin_src emacs-lisp
      (use-package flycheck
        :diminish flycheck-mode
        :config (global-flycheck-mode 1))
    #+end_src
+
 ** Company Mode
    #+begin_src emacs-lisp
      (use-package company
        :diminish company-mode
+       :bind (:map company-active-map
+                   ("<return>" . nil)
+                   ("RET" . nil)
+                   ("C-SPC" . #'company-complete-selection))
        :config
        (global-company-mode 1))
    #+end_src
+
 ** Smart Parens Mode
    Use paredit mode
    #+begin_src emacs-lisp
@@ -270,11 +302,13 @@
        (require 'smartparens-config)
        (sp-use-paredit-bindings))
    #+end_src
+
 ** Magit
    #+begin_src emacs-lisp
      (use-package magit
        :bind ("C-x g" . magit-status))
    #+end_src
+
 ** YASnippet
 #+begin_src emacs-lisp
   (use-package yasnippet
@@ -284,6 +318,7 @@
 
   (use-package yasnippet-snippets)
 #+end_src
+
 * Aliases
   #+begin_src emacs-lisp
   (defalias 'yes-or-no-p 'y-or-n-p)
