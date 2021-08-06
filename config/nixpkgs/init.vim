@@ -197,3 +197,42 @@ hi VertSplit ctermbg=NONE guibg=NONE
 
 colorscheme nord
 
+augroup vimrc_coc
+  autocmd!
+  autocmd VimEnter * call s:setup_coc()
+augroup end
+
+function s:setup_coc() abort
+call coc#config('languageserver', {
+      \ "rescript": {
+      \      "enable": "true",
+      \      "module": split(&packpath, ",")[0]."/pack/home-manager/start/vim-rescript/server/out/server.js",
+      \      "args": ["--node-ipc"],
+      \      "filetypes": ["rescript"],
+      \      "rootPatterns": ["bsconfig.json"]
+      \  }
+      \})
+call coc#config('languageserver', {
+      \ "ccls": {
+      \      "command": "ccls",
+      \      "filetypes": [
+      \          "c",
+      \          "cpp",
+      \          "objc",
+      \          "objcpp"
+      \      ],
+      \      "rootPatterns": [
+      \          ".ccls",
+      \          "compile_commands.json",
+      \          ".vim/",
+      \          ".git/",
+      \          ".hg/"
+      \      ],
+      \      "initializationOptions": {
+      \          "cache": {
+      \              "directory": "/tmp/ccls"
+      \          }
+      \      }
+      \  }
+      \})
+endfunction

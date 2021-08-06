@@ -1,6 +1,0 @@
-[
-  ./git
-  ./fish
-  ./alacritty
-  ./emacs
-]

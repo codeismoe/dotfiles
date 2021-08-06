@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=EXWM
-Comment=EXWM Window Manager
-Exec=sh /home/pks/.config/emacs/exwm.sh
-TryExec=sh
-Type=Application
