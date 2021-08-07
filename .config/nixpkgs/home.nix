@@ -100,45 +100,49 @@
 	  ignores = [ ".DS_Store" "*~" "*.swp" ".vim"];
   };
 
-    programs.fish = {
-      enable = true;
-      promptInit = ''
+  programs.fish = {
+    enable = true;
+    promptInit = ''
         any-nix-shell fish --info-right | source
         starship init fish | source
       '';
 
-      plugins = [];
-    };
-    programs.starship = {
-      enable = true;
-    };
-    programs.neovim = {
-       enable = true;
-        withPython3 = true;
-        withNodeJs = true;
-        plugins = with pkgs.vimPlugins; [
-            vinegar
-            vim-polyglot
-            nord-vim
-            tabular
-            vim-markdown
-            vim-commentary
-            vim-airline
-            vim-airline-themes
-            vim-airline-clock
+    plugins = [];
+  };
+  programs.starship = {
+    enable = true;
+  };
+  programs.neovim = {
+    enable = true;
+    withPython3 = true;
+    withNodeJs = true;
+    plugins = with pkgs.vimPlugins; [
+      vinegar
+      vim-polyglot
+      nord-vim
+      tabular
+      vim-markdown
+      vim-commentary
+      vim-airline
+      vim-airline-themes
+      vim-airline-clock
 
-            coc-nvim
-            coc-snippets
+      coc-nvim
+      coc-snippets
 
-            fzf-vim
+      fzf-vim
 
-            denite
-            vim-snippets
-        ];
-        extraConfig = (builtins.readFile ./init.vim);
-	  };
+      denite
+      vim-snippets
+    ];
+    extraConfig = (builtins.readFile ./init.vim);
+	};
 
-    services.lorri.enable = true;
-    
-    home.stateVersion = "21.11";
+  services.lorri.enable = true;
+
+  services.taffybar = {
+    enable = true;
+  };
+  
+  home.stateVersion = "21.11";
 }

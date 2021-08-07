@@ -2,3 +2,4 @@
 nixos
 Makefile
 default.nix
+.envrc
