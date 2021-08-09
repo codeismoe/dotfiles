@@ -1,26 +1,36 @@
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Main where
 
-import System.Taffybar.Support.PagerHints (pagerHints)
-import XMonad
-import XMonad.Actions.Navigation2D
-import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.ManageDocks
-import XMonad.Layout.Accordion
-import XMonad.Layout.BinarySpacePartition
-import XMonad.Layout.Decoration
-import XMonad.Layout.Spacing
-import qualified XMonad.StackSet as W
-import XMonad.Util.EZConfig
-import XMonad.Util.Types
+import           System.Taffybar.Support.PagerHints (pagerHints)
+import           XMonad
+import           XMonad.Actions.Navigation2D
+import           XMonad.Hooks.DynamicLog
+import           XMonad.Hooks.EwmhDesktops
+import           XMonad.Hooks.ManageDocks
+import           XMonad.Layout.Accordion
+import           XMonad.Layout.BinarySpacePartition
+import           XMonad.Layout.Decoration
+import           XMonad.Layout.Fullscreen
+import           XMonad.Layout.Spacing
+import qualified XMonad.StackSet                    as W
+import           XMonad.Util.EZConfig
+import           XMonad.Util.Run
+import           XMonad.Util.Types
 
 main :: IO ()
-main = xmonad' myConfig
+main = do
+  xm <- spawnPipe "xmobar"
+  xmonad' myConfig
+    { logHook = dynamicLogWithPP xmobarPP { ppOutput = hPutStrLn xm
+                                          , ppTitle = xmobarColor "green" "" . shorten 50
+                                          }
+    , manageHook = manageDocks <+> manageHook myConfig
+    , layoutHook = avoidStruts $ layoutHook myConfig
+    }
 
-xmonad' = xmonad . ewmh . myNavigation . pagerHints . docks . myDecoration
+xmonad' = xmonad . ewmh . myNavigation . pagerHints . docks . fullscreenSupport . myDecoration
 
 myNavigation = navigation2D def (xK_k, xK_h, xK_j, xK_l) [(mod4Mask, windowGo)] False
 
@@ -38,7 +48,7 @@ myDecoration config = config {layoutHook = decoration NoText theme (SideDecorati
           urgentBorderWidth = 0,
           decoHeight = 4
         }
-         
+
 
 myConfig =
   def
@@ -52,19 +62,23 @@ myConfig =
     keys =
       [ ("M-p", spawn "rofi -show run"),
         ("M-S-h", sendMessage $ ExpandTowards L),
-        ("M-S-l", sendMessage $ ShrinkFrom L),
+        ("M-S-l", sendMessage $ ExpandTowards R),
         ("M-S-k", sendMessage $ ExpandTowards U),
-        ("M-S-j", sendMessage $ ShrinkFrom U),
+        ("M-S-j", sendMessage $ ExpandTowards D),
         ("M-S-M1-h", sendMessage $ ShrinkFrom R),
-        ("M-S-M1-l", sendMessage $ ExpandTowards R),
+        ("M-S-M1-l", sendMessage $ ShrinkFrom L),
         ("M-S-M1-k", sendMessage $ ShrinkFrom D),
-        ("M-S-M1-j", sendMessage $ ExpandTowards D),
+        ("M-S-M1-j", sendMessage $ ShrinkFrom U),
         ("M-s", sendMessage Swap),
         ("M-S-s", sendMessage Rotate),
         ("M-M1-j", sendMessage $ SplitShift Prev),
         ("M-M1-k", sendMessage $ SplitShift Next)
       ]
-    myLayout = spacingRaw True Border { top = 0, left = 0, right = 0, bottom = 0} True Border {top = 3, left = 3, right = 3, bottom = 3} True $ avoidStruts emptyBSP
+    myLayout =
+      spacingRaw False
+      Border {top = 0, left = 0, right = 0, bottom = 0} True
+      Border {top = 6, left = 6, right = 6, bottom = 6} True
+      $ Full ||| emptyBSP
 
 newtype SideDecoration a = SideDecoration Direction2D
   deriving (Show, Read)

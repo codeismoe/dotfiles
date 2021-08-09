@@ -24,7 +24,8 @@
     roswell
 
     fira-code
-    iosevka 
+    iosevka
+    (nerdfonts.override { fonts = [ "Iosevka" ]; })
     elixir
     elixir_ls
 
@@ -140,9 +141,10 @@
 
   services.lorri.enable = true;
 
-  services.taffybar = {
+  services.picom = {
     enable = true;
+    shadow = true;
   };
-  
+
   home.stateVersion = "21.11";
 }
