@@ -12,68 +12,35 @@
   fonts.fontconfig.enable = true;
 
   home.packages = with pkgs; [
+    discord
+    k3s
+    kubernetes-helm
+    runelite
+    kompose
+    curl
     firefox
-    nyxt
     mpv
     kitty
     any-nix-shell
     emacs
-
-    sbcl
-    lispPackages.quicklisp
-    roswell
-
     fira-code
     iosevka
     (nerdfonts.override { fonts = [ "Iosevka" ]; })
-    elixir
-    elixir_ls
-
     python39
     python-language-server
-    
-    htop
-    nvtop
     ispell
-
-    pavucontrol
     filezilla
-    discord
     steam
-
-    emacs-all-the-icons-fonts
-
     krita
+    spotify
     gimp
+    blender
     texlive.combined.scheme-basic
-
     wget
-
-    multimc
-    jdk16
-    # zulu8
-
-    rofi
     unzip
-
-    octaveFull
-
-    libreoffice-fresh
-
     ripgrep
-    dwarf-fortress-packages.dwarf-fortress-full
-    dwarf-therapist
-
-    niv
-    stack
-
     autoconf
     automake
-
-    xmobar
-    trayer
-    feh
-
     ledger
   ];
 
@@ -129,6 +96,8 @@
       vim-airline-clock
 
       coc-nvim
+      coc-rust-analyzer
+      coc-metals
       coc-snippets
 
       fzf-vim
@@ -142,7 +111,7 @@
   services.lorri.enable = true;
 
   services.picom = {
-    enable = true;
+    enable = false;
     shadow = true;
   };
 
