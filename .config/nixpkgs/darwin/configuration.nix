@@ -1,51 +1,35 @@
 { config, pkgs, ... }:
 
-let 
-   pkgs_x86 = import <nixpkgs> { localSystem = "x86_64-darwin"; };
-   pkgs_m1 = import <nixpkgs> { localSystem = "aarch64-darwin"; };
-   vim-rescript = pkgs.vimUtils.buildVimPlugin {
-     name = "vim-rescript";
-     configurePhase = "";
-     dontBuild = true;
-     buildInputs = [];
-     src = pkgs.fetchFromGitHub {
-       owner = "rescript-lang";
-       repo = "vim-rescript";
-       rev = "a2196b50886f3009c846d11f361698620dfd51af";
-       sha256 = "1x340ppcc6g9gfgx45qzr3wdiybxsgdavw1cq58jjw78vb2vfhib";
-     };
-   };
-in
 {
   imports = [ <home-manager/nix-darwin> ];
   home-manager.useUserPackages = true;
 
   environment.systemPackages = [];
 
+  homebrew = {
+    enable = true;
+    brewPrefix = "/opt/homebrew/bin";
+    casks = [ "firefox" "slack" "spotify" "discord" "runelite" "zoom" "krita" "gimp" "blender"];
+  };
+
   fonts = {
     enableFontDir = true;
-    fonts = [ pkgs.nerdfonts ];
+    fonts = [ (pkgs.nerdfonts.override { fonts = [ "Inconsolata" ]; }) ];
   };
 
   nix = {
     allowedUsers = [ "pks" ];
     package = pkgs.nix;
-    extraOptions = ''
-      extra-platforms = x86_64-darwin aarch64-darwin
-    '';
   };
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
-  homebrew.enable = true;
 
   environment.systemPath = [ /run/current-system/sw/bin ];
+  environment.darwinConfig = "$HOME/.config/nixpkgs/darwin/configuration.nix";
   programs.fish.enable = true;
 
   home-manager.users.pks = {pkgs, ...}: {
-    nixpkgs.overlays = [
-      (self: super: { inherit (pkgs_x86) reattach-to-user-namespace;  })
-    ];
     home.sessionVariables = {
       EDITOR = "nvim";
     };
@@ -53,31 +37,22 @@ in
     home.packages = (with pkgs; [
       timewarrior
       taskwarrior
-      vit
-      darwin.apple_sdk.frameworks.Cocoa
-      direnv
-      python39Packages.pip
-      python39Packages.virtualenv
-      python39Packages.pylint
-      python39Packages.pynvim
-      jq
-      gnupg
       ripgrep
-      rustup
+
+      darwin.apple_sdk.frameworks.Cocoa
+
       any-nix-shell
+      direnv
+      
+      rustup
+
       docker
       docker-compose
-      ccls
-
       nodejs
-      yarn
-      ocaml
-      ocamlPackages.ocaml-lsp
     ]);
 
     programs.tmux = {
       enable = true;
-      package = pkgs_x86.tmux;
       escapeTime = 0;
     };
 
@@ -113,33 +88,12 @@ in
     };
 
      programs.neovim = {
-       package = pkgs_x86.neovim-unwrapped;
        enable = true;
-        withPython3 = true;
-        plugins = with pkgs.vimPlugins; [
-            vinegar
-            vim-polyglot
-            nord-vim
-            tabular
-            vim-markdown
-            vim-commentary
-            vim-airline
-            vim-airline-themes
-            vim-airline-clock
-
-            { plugin = coc-nvim;
-            config = ''
-            '';
-          }
-            coc-snippets
-
-            fzf-vim
-
-            denite
-            vim-snippets
-            vim-rescript
-        ];
-        extraConfig = (builtins.readFile ./init.vim);
+       withPython3 = true;
+       plugins = with pkgs.vimPlugins; [ vim-packer ];
+       extraConfig = ''
+           lua require('start')
+       '';
      };
   };
 
@@ -154,10 +108,8 @@ in
     };
     NSGlobalDomain = {
       _HIHideMenuBar = true;
-      "com.apple.swipescrolldirection" = false;
     };
   };
-
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
