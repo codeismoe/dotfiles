@@ -9,7 +9,20 @@
   homebrew = {
     enable = true;
     brewPrefix = "/opt/homebrew/bin";
-    casks = [ "firefox" "slack" "spotify" "discord" "runelite" "zoom" "krita" "gimp" "blender"];
+    brews = [ 
+        "python@3.10"
+    ];
+    casks = [
+        "firefox"
+        "slack"
+        "spotify"
+        "discord"
+        "runelite"
+        "zoom"
+        "krita"
+        "gimp"
+        "blender"
+    ];
   };
 
   fonts = {
@@ -24,6 +37,7 @@
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
+  services.lorri.enable = true;
 
   environment.systemPath = [ /run/current-system/sw/bin ];
   environment.darwinConfig = "$HOME/.config/nixpkgs/darwin/configuration.nix";
@@ -34,26 +48,16 @@
       EDITOR = "nvim";
     };
 
-    home.packages = (with pkgs; [
-      timewarrior
-      taskwarrior
-      ripgrep
-
-      darwin.apple_sdk.frameworks.Cocoa
-
-      any-nix-shell
-      direnv
-      
-      rustup
-
-      docker
-      docker-compose
-      nodejs
-    ]);
+    home.packages = (with pkgs; [ any-nix-shell direnv ]);
 
     programs.tmux = {
       enable = true;
       escapeTime = 0;
+    };
+
+    programs.direnv = {
+      enable = true;
+      enableFishIntegration = true;
     };
 
     programs.git = {
@@ -65,12 +69,19 @@
 
     programs.fish = {
       enable = true;
-      promptInit = ''
-        any-nix-shell fish --info-right | source
-        starship init fish | source
-      '';
 
       plugins = [];
+
+      interactiveShellInit = ''
+        alias vlime 'sbcl --load ~/.local/share/nvim/site/pack/packer/start/vlime/lisp/start-vlime.lisp'
+        alias brew64 'arch -x86_64 /usr/local/bin/brew'
+        any-nix-shell fish --info-right | source
+        fish_add_path /opt/homebrew/opt/python@3.10/bin
+        fish_add_path /usr/local/share/dotnet/x64
+        fish_add_path /opt/homebrew/opt/openjdk/bin
+        starship init fish | source
+        source /opt/homebrew/share/fish/vendor_completions.d/*
+      '';
     };
 
     programs.starship = {
@@ -89,7 +100,7 @@
 
      programs.neovim = {
        enable = true;
-       withPython3 = true;
+       withPython3 = false;
        plugins = with pkgs.vimPlugins; [ vim-packer ];
        extraConfig = ''
            lua require('start')
@@ -105,9 +116,6 @@
     finder = {
       AppleShowAllExtensions = true;
       _FXShowPosixPathInTitle = true;
-    };
-    NSGlobalDomain = {
-      _HIHideMenuBar = true;
     };
   };
 
