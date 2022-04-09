@@ -3,7 +3,7 @@
 ;;; Init file for Emacs
 ;;; Code:
 
-;; straight.el backup
+;; straight.el bootstrap
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -16,6 +16,8 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+(straight-use-package 'use-package)
+(setq use-package-always-ensure t)
 
 ;; backup stuff
 (setq backup-by-copying t
@@ -48,109 +50,45 @@
 (defalias 'yes-or-no-p #'y-or-n-p)
 
 ;; color theme
-(straight-use-package 'gruvbox-theme)
-(load-theme 'gruvbox t)
-
-;; eyebrowse (project things)
-(straight-use-package 'eyebrowse)
-(eyebrowse-mode 1)
-
-;; meow editing
-(straight-use-package 'meow)
-(load-file "~/.emacs.d/meow.el")
-(require 'meow)
-(meow-setup)
-(meow-global-mode 1)
+(use-package gruvbox-theme
+  :straight t
+  :config
+  (load-theme 'gruvbox t))
 
 ;; company mode
-(straight-use-package 'company)
-(add-hook 'after-init-hook #'global-company-mode)
-
-;; counsel
-(straight-use-package 'counsel)
-(straight-use-package 'swiper)
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-(global-set-key (kbd "C-s") 'swiper)
-
+(use-package company
+  :straight t
+  :hook ((after-init . global-company-mode)))
 
 ;; git
-(straight-use-package 'magit)
+(use-package magit
+  :straight t)
 
-(straight-use-package 'ace-window)
-(global-set-key (kbd "M-o") 'ace-window)
+(use-package ace-window
+  :straight t
+  :bind ("M-o" . ace-window))
 
 ;; projectile stuff
-(straight-use-package 'projectile)
-(require 'projectile)
-(projectile-mode 1)
-(setq projectile-completion-system 'ivy)
-(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(use-package projectile
+  :straight t
+  :bind-keymap ("C-c p" . projectile-command-map)
+  :config
+  (projectile-mode 1))
 
 ;; which key
-
-(straight-use-package 'which-key)
-(which-key-mode 1)
+(use-package which-key
+  :straight t
+  :config
+  (which-key-mode 1))
 
 ;; flycheck
-(straight-use-package 'flycheck)
-(require 'flycheck)
-(global-flycheck-mode 1)
-
-;; direnv
-(straight-use-package 'direnv)
-(direnv-mode 1)
-
-;;; lsp
-(straight-use-package 'lsp-pyright)
-(straight-use-package 'lsp-haskell)
-(straight-use-package 'lsp-mode)
-(require 'lsp)
-(add-hook 'python-mode-hook (lambda ()
-			      (require 'lsp-pyright)
-			      (lsp)))
-(add-hook 'haskell-mode 'lsp)
-(add-hook 'lsp-mode 'lsp-enable-which-key-integration)
-(setq lsp-keymap-prefix "s-l"
-      lsp-rust-server 'rust-analyzer)
-(straight-use-package 'lsp-ui)
-(straight-use-package 'lsp-ivy)
-(straight-use-package 'dap-mode)
-
-;; tide
-(straight-use-package 'tide)
-(defun setup-tide-mode ()
-  "Hook to setup tide."
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
-(add-hook 'typescript-mode 'setup-tide-mode)
-
-(straight-use-package 'web-mode)
-(require 'web-mode)
-(add-to-list 'auto-mode-alist
-	     (mapcar (lambda (x)
-		       (cons x 'web-mode))
-		     '("\\.ejs\\'" "\\.hbs\\'" "\\.html\\'" "\\.php\\'" "\\.[jt]sx?\\'")))
-(setq web-mode-content-types-alist '(("jsx" . "\\.[jt]sx?\\'"))
-      web-mode-markup-indent-offset 2
-      web-mode-css-indent-offset 2
-      web-mode-code-indent-offset 2
-      web-mode-script-padding 2
-      web-mode-block-padding 2
-      web-mode-style-padding 2
-      web-mode-enable-auto-pairing t
-      web-mode-enable-auto-closing t
-      web-mode-enable-current-element-highlight t)
+(use-package flycheck
+  :straight t
+  :config
+  (global-flycheck-mode 1))
 
 ;; org mode
 (setq org-clock-persist 'history)
 (org-clock-persistence-insinuate)
 
-(provide 'init)
 ;;; init.el ends here

@@ -57,7 +57,6 @@
 
     programs.direnv = {
       enable = true;
-      enableFishIntegration = true;
     };
 
     programs.git = {
@@ -73,12 +72,10 @@
       plugins = [];
 
       interactiveShellInit = ''
-        alias vlime 'sbcl --load ~/.local/share/nvim/site/pack/packer/start/vlime/lisp/start-vlime.lisp'
-        alias brew64 'arch -x86_64 /usr/local/bin/brew'
-        any-nix-shell fish --info-right | source
         fish_add_path /opt/homebrew/opt/python@3.10/bin
         fish_add_path /usr/local/share/dotnet/x64
         fish_add_path /opt/homebrew/opt/openjdk/bin
+        fish_add_path /Users/pks/.ghcup/bin/
         starship init fish | source
         source /opt/homebrew/share/fish/vendor_completions.d/*
       '';
@@ -97,15 +94,6 @@
         rust.symbol = " ";
       };
     };
-
-     programs.neovim = {
-       enable = true;
-       withPython3 = false;
-       plugins = with pkgs.vimPlugins; [ vim-packer ];
-       extraConfig = ''
-           lua require('start')
-       '';
-     };
   };
 
   system.defaults = {
