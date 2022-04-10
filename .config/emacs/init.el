@@ -17,6 +17,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 (straight-use-package 'use-package)
+(require 'use-package)
 (setq use-package-always-ensure t)
 
 ;; backup stuff
@@ -45,7 +46,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(set-frame-font "Inconsolata Nerd Font 16")
+(set-frame-font "Iosevka 16")
 (setq ring-bell-function 'ignore)
 (defalias 'yes-or-no-p #'y-or-n-p)
 
@@ -86,6 +87,9 @@
   :straight t
   :config
   (global-flycheck-mode 1))
+
+(use-package nix-mode
+  :straight t)
 
 ;; org mode
 (setq org-clock-persist 'history)
