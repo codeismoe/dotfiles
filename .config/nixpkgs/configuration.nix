@@ -2,102 +2,143 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
-  nixpkgs.config.allowUnfree = true;
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
-  hardware.pulseaudio.enable = true;
 
-  # Use the systemd-boot EFI boot loader.
-  boot.kernelModules = [ "fuse" ];
-  virtualisation.libvirtd.enable = true;
-
-  virtualisation.docker = {
-    enable = true;
-  };
-
+  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "nixos"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
+  # Configure network proxy if necessary
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable networking
+  networking.networkmanager.enable = true;
+
+  # Set your time zone.
   time.timeZone = "America/New_York";
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
-  # Per-interface useDHCP will be mandatory in the future, so this generated config
-  # replicates the default behaviour.
-  networking.useDHCP = false;
-  # networking.ipv6 = false;
-  # net
-  networking.interfaces.enp6s0.useDHCP = true;
-
-  nix = {
-    extraOptions = ''
-      experimental-features = nix-command flakes ca-references
-    '';
-    package = pkgs.nixUnstable;
-  };
-  
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
+
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
   };
 
-  environment.systemPackages = with pkgs; [
-    vim 
-    virt-manager
-    podman-compose
-  ];
-  
-  services.openssh.enable = true;
-  services.k3s = {
+  # Enable the X11 windowing system.
+  hardware.opengl = {
     enable = true;
-    role = "server";
-    extraFlags = toString [
-      "--write-kubeconfig-mode 0644"
-    ];
-  };
-  programs.steam.enable = true;
-  programs.dconf.enable = true;
-
-  users.users.pks = {
-    isNormalUser = true;
-    shell = pkgs.fish;
-    home = "/home/pks";
-    description = "Peter Steidel";
-    extraGroups = [ "wheel" "libvirtd" "power" "audio" "docker" ];
+    driSupport = true;
+    driSupport32Bit = true;
   };
 
-  security.sudo.wheelNeedsPassword=false;
-  services.dbus = {
-    enable = true;
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = true;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  # Configure keymap in X11
   services.xserver = {
     enable = true;
-    videoDrivers = [ "nvidia" ];
-    windowManager.xmonad = {
-      enable = true;
-      enableContribAndExtras = true;
-    };
-    desktopManager.plasma5.enable = true;
-    displayManager.sddm.enable = true;
+    layout = "us";
+    videoDrivers = ["nvidia"];
+    xkbVariant = "";
+    displayManager.lightdm.enable = true;
+    desktopManager.cinnamon.enable = true;
   };
-  
-  
+
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
+
+  # Enable sound with pipewire.
+  sound.enable = true;
+  hardware.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true;
+
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
+  };
+
+  # Enable touchpad support (enabled default in most desktopManager).
+  # services.xserver.libinput.enable = true;
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.patch = {
+    isNormalUser = true;
+    shell = pkgs.fish;
+    description = "patchwork";
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "docker" ];
+  };
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+    vim
+    virt-manager
+  ];
+  fonts.fonts = with pkgs; [ iosevka ];
+
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
+  programs = { 
+    fish.enable = true;
+    steam.enable = true; 
+    dconf.enable = true;
+  };
+
+  virtualisation = {
+    libvirtd.enable = true;
+    docker.enable = true;
+  };
+
+  # List services that you want to enable:
+
+  # Enable the OpenSSH daemon.
+  services.openssh.enable = true;
+
   # Open ports in the firewall.
-  networking.firewall.checkReversePath = false;
-  networking.firewall.allowedTCPPorts = [ 22 ];
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -105,6 +146,5 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "21.05"; # Did you read the comment?
+  system.stateVersion = "23.05"; # Did you read the comment?
 }
-

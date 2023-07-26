@@ -1,13 +1,19 @@
-#+TITLE: Emacs Startup
+#+TITLE: Emacs Configuration
+#+PROPERTY: header-args :tangle init.el
+
+* Early Init
+:PROPERTIES:
+:header-args: :tangle early-init.el
+:END:
+#+begin_src emacs-lisp
+  (setq gc-cons-threshold most-positive-fixnum)
+#+end_src
 
 * Bootstrap
   Bootstrap =straight.el= and load =use-package= for package configuration
-
   #+begin_src emacs-lisp
-    (defvar bootstrap-version)
     (let ((bootstrap-file
-	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	  (bootstrap-version 5))
+	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory)))
       (unless (file-exists-p bootstrap-file)
 	(with-current-buffer
 	    (url-retrieve-synchronously
@@ -18,9 +24,14 @@
       (load bootstrap-file nil 'nomessage))
     (straight-use-package 'use-package)
     (require 'use-package)
+    (setq use-package-always-ensure t)
   #+end_src
-
 * Miscellanous Configuration
+** GCMH
+#+begin_src emacs-lisp
+  (use-package gcmh :straight t :config (gcmh-mode 1))
+#+end_src
+
 ** Backup configuration
    Make sure we don't clutter the current directory with backup saves, keep them all somewhere else
    #+begin_src emacs-lisp
@@ -39,12 +50,14 @@
        (write-region "" 0 custom-file))
      (load-file custom-file)
    #+end_src
-** Spelling, bell, and =yes-or-no-p=
+** Spelling, bell, exec-path, indent, and =yes-or-no-p=
    #+begin_src emacs-lisp
+     (add-to-list 'exec-path "~/.rustup/toolchains/nightly-aarch64-apple-darwin/bin/")
      (setq ispell-program-name "aspell")
      (setq ring-bell-function 'ignore)
      (defalias 'yes-or-no-p #'y-or-n-p)
-     (setq-default tab-width 4)
+     (setq-default indent-tabs-mode nil)
+     (setq mac-command-modifier 'meta)
    #+end_src
 
 * Utilities
@@ -67,17 +80,14 @@
    
 * Aesthetics
   #+begin_src emacs-lisp
-    (use-package monokai-theme
+    (use-package nord-theme
       :straight t
-      :config
-      (load-theme 'monokai t))
-    (menu-bar-mode 1)
+      :config (load-theme 'nord t))
+
+    (menu-bar-mode (if (eq system-type 'darwin) 1 -1))
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
-    (when (x-list-fonts "Fira Code")
-      (add-to-list 'default-frame-alist
-		   '(font . "Fira Code-14")))
-
+    (set-frame-font "Iosevka 16")
   #+end_src
 * Completion
   #+begin_src emacs-lisp
@@ -93,7 +103,9 @@
 			     (inhibit-same-window . t)
 			     (window-height . 0.3))))
   #+end_src
-* Programmingd
+* Meow Mode
+
+* Programming
 ** Utilities
    #+begin_src emacs-lisp
      (use-package magit
@@ -115,14 +127,9 @@
 
      (use-package yasnippet-snippets
        :straight t)
-
-     (use-package ripgrep
-       :straight t)
    #+end_src
 ** LSP
    #+begin_src emacs-lisp
-     (setq gc-cons-threshold 100000000)
-     (setq read-process-output-max (* 1024 1024))
      (use-package lsp-mode
        :straight t
        :init
@@ -138,64 +145,32 @@
        :straight t)
    #+end_src
 ** Languages
+*** Python
+*** C/C++
 *** Rust
     #+begin_src emacs-lisp
       (use-package rust-mode
-	:straight t
-	:hook ((rust-mode . lsp))
-	:config
-	(setq lsp-rust-server 'rust-analyzer))
+        :straight t
+        :hook (rust-mode . lsp)
+        :config
+        (setq lsp-rust-server 'rust-analyzer))
     #+end_src
 *** Nix
     #+begin_src emacs-lisp
       (use-package nix-mode
 	:straight t)
     #+end_src
-*** Web
-**** JavaScript/Typescript
-     #+begin_src emacs-lisp
-       (use-package typescript-mode
-	 :straight t)
+*** Haskell
+    #+begin_src emacs-lisp
+      (use-package lsp-haskell
+        :straight t)
+      (use-package haskell-mode
+        :straight t
+        :hook (haskell-mode . lsp))
+    #+end_src
 
-       (defun setup-tide-mode ()
-	 (interactive)
-	 (tide-setup)
-	 (flycheck-mode +1)
-	 (setq flycheck-check-syntax-automatically '(save mode-enabled))
-	 (eldoc-mode +1)
-	 (tide-hl-identifier-mode +1)
-	 (setq default-tab-width 4
-	       js-indent-level 4
-	       typescript-indent-level 4
-               indent-tabs-mode t)
-	 (company-mode +1))
-
-       (use-package tide
-	 :straight t
-	 :hook ((typescript-mode . lsp)
-		(typescript-mode . setup-tide-mode)))
-
-       (use-package web-mode
-	 :straight t)
-
-       (use-package ng2-mode
-	 :straight t)
-
-       (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
-       (add-hook 'web-mode-hook
-		 (lambda ()
-		   (when (string-equal "tsx" (file-name-extension buffer-file-name))
-		     (setup-tide-mode))))
-
-       (flycheck-add-mode 'typescript-tslint 'web-mode)
-     #+end_src
-     
 * Org Mode
   #+begin_src emacs-lisp
     (setq org-clock-persist 'history)
     (org-clock-persistence-insinuate)
-    (global-set-key (kbd "C-c a") #'org-agenda)
-    (global-set-key (kbd "C-c c") #'org-capture)
-    (setq org-directory "~/org")
-    (setq org-agenda-files (list "work.org"))
   #+end_src
