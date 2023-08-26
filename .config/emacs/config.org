@@ -1,9 +1,9 @@
 #+TITLE: Emacs Configuration
-#+PROPERTY: header-args :tangle init.el
+#+PROPERTY: header-args :tangle ~/.config/emacs/init.el
 
 * Early Init
 :PROPERTIES:
-:header-args: :tangle early-init.el
+:header-args: :tangle ~/.config/emacs/early-init.el
 :END:
 #+begin_src emacs-lisp
   (setq gc-cons-threshold most-positive-fixnum)
