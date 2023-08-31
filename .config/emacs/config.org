@@ -137,6 +137,8 @@
        :hook ((lsp-mode . lsp-enable-which-key-integration))
        :commands lsp)
 
+     (use-package lsp-ui :straight t)
+
      (use-package helm-lsp
        :straight t
        :commands hlm-lsp-workspace-symbol)
@@ -160,6 +162,12 @@
       (use-package nix-mode
 	:straight t)
     #+end_src
+*** Javascript
+#+begin_src emacs-lisp
+  (use-package js2-mode
+    :straight t
+    :hook (js2-mode . lsp))
+#+end_src
 *** Haskell
     #+begin_src emacs-lisp
       (use-package lsp-haskell
