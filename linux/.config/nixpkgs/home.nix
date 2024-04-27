@@ -1,42 +1,38 @@
 { config, pkgs, ... }:
 
 {
+
   programs.home-manager.enable = true;
-  home.username = "patch";
-  home.homeDirectory = "/home/patch";
+  home.stateVersion = "23.11";
+  home.username = "patchwork";
+  home.homeDirectory = "/home/patchwork";
 
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     discord
-    k3s
-    kubernetes-helm
-    runelite
-    kompose
+    nodejs
+    signal-desktop
     curl
     firefox
     mpv
     kitty
     any-nix-shell
     emacs
-    fira-code
     iosevka
-    (nerdfonts.override { fonts = [ "Iosevka" ]; })
-    python39
-    python-language-server
+    inconsolata
+    (nerdfonts.override { fonts = [ "Iosevka" "Inconsolata" ]; })
     ispell
-    filezilla
-    steam
     krita
     spotify
     gimp
-    blender
-    texlive.combined.scheme-basic
     wget
     unzip
     ripgrep
     autoconf
     automake
     ledger
+    rustup
+    clang
   ];
 
   programs.tmux = {
@@ -57,7 +53,7 @@
 
   programs.fish = {
     enable = true;
-    promptInit = ''
+    interactiveShellInit = ''
         any-nix-shell fish --info-right | source
         starship init fish | source
       '';
@@ -70,6 +66,5 @@
   };
 
   services.lorri.enable = true;
-
-  home.stateVersion = "21.11";
+  
 }

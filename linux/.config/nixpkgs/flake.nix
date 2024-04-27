@@ -8,7 +8,7 @@
 
   outputs = { home-manager, nixpkgs, ... }: {
     nixosConfigurations = {
-      nixos = nixpkgs.lib.nixosSystem {
+      patchwork = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
@@ -16,7 +16,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.pks = import ./home.nix;
+            home-manager.users.patchwork = import ./home.nix;
           }
         ];
       };
