@@ -1,6 +1,7 @@
 .git
-nixos
+nixpkgs
 Makefile
 default.nix
 .envrc
 README.md
+emacs
