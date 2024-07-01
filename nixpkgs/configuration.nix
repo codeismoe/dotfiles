@@ -7,7 +7,10 @@
     ];
 
   nix.settings.experimental-features = [ "nix-command flakes" ];
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    nvidia.acceptLicense = true;
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -20,7 +23,7 @@
   
   services.xserver = {
     enable = true;
-    # videoDrivers = ["nvidia"];
+    videoDrivers = ["nvidia"];
     xkb.layout = "us";
     displayManager.lightdm.enable = true;
     windowManager.i3 = {
@@ -38,6 +41,21 @@
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
+  };
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = false;
+    powerManagement.finegrained = false;
+    open = false;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
+
+    prime = {
+      sync.enable = true;
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
   };
 
   sound.enable = true;
