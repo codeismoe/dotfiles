@@ -33,6 +33,7 @@
         i3status
         i3lock
         xss-lock
+        networkmanagerapplet
       ];
     };
   };
@@ -77,6 +78,10 @@
     fish.enable = true;
     steam.enable = true;
     dconf.enable = true;
+  };
+
+  xdg.mime.defaultApplications = {
+    "application/pdf" = "org.pwmt.zathura-pdf-mupdf.desktop";
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,

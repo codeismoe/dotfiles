@@ -19,20 +19,31 @@
     any-nix-shell
     emacs
     iosevka
-    inconsolata
+    roboto
     (nerdfonts.override { fonts = [ "Iosevka" "Inconsolata" ]; })
     ispell
-    krita
     spotify
     gimp
     wget
     unzip
     ripgrep
-    autoconf
     automake
+    maim
     ledger
     rustup
     clang
+    texliveFull
+    brightnessctl
+    typst
+    zathura
+    ghc
+    cabal-install
+    haskell-language-server
+    clang-tools
+    gnumake
+    aspell
+    aspellDicts.en
+    aspellDicts.en-computers
   ];
 
   programs.tmux = {
