@@ -83,13 +83,14 @@
 
     (use-package eyebrowse
       :straight t)
+
   #+end_src
    
 * Aesthetics
   #+begin_src emacs-lisp
-    (use-package nord-theme
+    (use-package moe-theme
       :straight t
-      :config (load-theme 'nord t))
+      :config (moe-dark))
 
     (menu-bar-mode (if (eq system-type 'darwin) 1 -1))
     (tool-bar-mode -1)
@@ -221,11 +222,6 @@
 
 #+RESULTS:
 *** Web mode
-*** typst
-#+begin_src emacs-lisp
-  (use-package typst-ts-mode
-    :straight (typst-ts-mode :type git :host sourcehut :repo "meow_king/typst-ts-mode" :files (:defaults "*.el")))
-#+end_src
 *** Haskell
     #+begin_src emacs-lisp
       (use-package lsp-haskell
