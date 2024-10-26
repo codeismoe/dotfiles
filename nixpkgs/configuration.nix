@@ -38,10 +38,9 @@
     };
   };
 
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
   };
 
   hardware.nvidia = {
@@ -59,10 +58,14 @@
     };
   };
 
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+  };
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
 
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
 
   users.users.patchwork = {
     isNormalUser = true;
@@ -76,12 +79,10 @@
   
   programs = {
     fish.enable = true;
-    steam.enable = true;
     dconf.enable = true;
-  };
-
-  xdg.mime.defaultApplications = {
-    "application/pdf" = "org.pwmt.zathura-pdf-mupdf.desktop";
+    gnupg.agent = {
+      enable = true;
+    };
   };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
@@ -95,6 +96,7 @@
   #
   # This value being lower than the current NixOS release does NOT mean your system is
   # out of date, out of support, or vulnerable.
+  # out of date, out of support, or vulnerable.
   #
   # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
   # and migrated your data accordingly.
@@ -102,4 +104,3 @@
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "23.11"; # Did you read the comment?
 }
-
