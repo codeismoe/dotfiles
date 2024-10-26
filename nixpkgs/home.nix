@@ -14,28 +14,21 @@
     signal-desktop
     curl
     firefox
-    mpv
     kitty
     any-nix-shell
     emacs
     iosevka
-    roboto
     (nerdfonts.override { fonts = [ "Iosevka" "Inconsolata" ]; })
     ispell
     spotify
-    gimp
     wget
     unzip
     ripgrep
     automake
     maim
-    ledger
     rustup
     clang
-    texliveFull
     brightnessctl
-    typst
-    zathura
     ghc
     cabal-install
     haskell-language-server
@@ -44,6 +37,10 @@
     aspell
     aspellDicts.en
     aspellDicts.en-computers
+    python3
+    nethack
+    graphviz
+    qemu
   ];
 
   programs.tmux = {
