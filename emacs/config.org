@@ -27,9 +27,19 @@
     (setq use-package-always-ensure t)
   #+end_src
 * Miscellanous Configuration
+** Diminish Mode
+#+begin_src emacs-lisp
+    (use-package diminish
+      :straight t
+      :config
+      (require 'diminish))
+#+end_src
 ** GCMH
 #+begin_src emacs-lisp
-  (use-package gcmh :straight t :config (gcmh-mode 1))
+  (use-package gcmh
+    :straight t
+    :diminish gcmh-mode
+    :config (gcmh-mode 1))
 #+end_src
 
 ** Backup configuration
@@ -50,7 +60,7 @@
        (write-region "" 0 custom-file))
      (load-file custom-file)
    #+end_src
-** Spelling, bell, exec-path, indent, and =yes-or-no-p=
+** Spelling, bell, exec-path, indent, =yes-or-no-p=, etc
    #+begin_src emacs-lisp
      (add-to-list 'exec-path "~/.rustup/toolchains/nightly-aarch64-apple-darwin/bin/")
      (setq ispell-program-name "aspell")
@@ -74,6 +84,7 @@
 
     (use-package which-key
       :straight t
+      :diminish which-key-mode
       :config
       (which-key-mode 1))
 
@@ -83,7 +94,6 @@
 
     (use-package eyebrowse
       :straight t)
-
   #+end_src
    
 * Aesthetics
@@ -101,38 +111,42 @@
   #+begin_src emacs-lisp
     (use-package helm
       :straight t
+      :diminish helm-mode
       :bind (("M-x" . helm-M-x)
-	     ("C-x C-f" . helm-find-files))
+             ("C-x C-f" . helm-find-files))
       :config
       (helm-mode 1)
       (add-to-list 'display-buffer-alist
-			`(,(rx bos "*helm" (* not-newline) "*" eos)
-			     (display-buffer-in-side-window)
-			     (inhibit-same-window . t)
-			     (window-height . 0.3))))
+                        `(,(rx bos "*helm" (* not-newline) "*" eos)
+                             (display-buffer-in-side-window)
+                             (inhibit-same-window . t)
+                             (window-height . 0.3))))
   #+end_src
 * Programming
 ** Utilities
    #+begin_src emacs-lisp
-          (use-package magit
-            :straight t)
+     (use-package magit
+       :straight t)
 
-          (use-package company
-            :straight t
-            :hook ((after-init . global-company-mode)))
+     (use-package company
+       :straight t
+       :diminish company-mode
+       :hook ((after-init . global-company-mode)))
 
-          (use-package flycheck
-            :straight t
-            :config
-            (global-flycheck-mode 1))
+     (use-package flycheck
+       :straight t
+       :diminish flycheck-mode
+       :config
+       (global-flycheck-mode 1))
 
-          (use-package yasnippet
-            :straight t
-            :config
-            (yas-global-mode 1))
+     (use-package yasnippet
+       :straight t
+       :diminish yas-minor-mode
+       :config
+       (yas-global-mode 1))
 
-          (use-package yasnippet-snippets
-            :straight t)
+     (use-package yasnippet-snippets
+       :straight t)
    #+end_src
 *** Tree sit
 #+begin_src emacs-lisp
