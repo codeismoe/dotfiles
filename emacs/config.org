@@ -13,19 +13,20 @@
   Bootstrap =straight.el= and load =use-package= for package configuration
   #+begin_src emacs-lisp
     (let ((bootstrap-file
-	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory)))
+           (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory)))
       (unless (file-exists-p bootstrap-file)
-	(with-current-buffer
-	    (url-retrieve-synchronously
-	     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	     'silent 'inhibit-cookies)
-	  (goto-char (point-max))
-	  (eval-print-last-sexp)))
+        (with-current-buffer
+            (url-retrieve-synchronously
+             "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+             'silent 'inhibit-cookies)
+          (goto-char (point-max))
+          (eval-print-last-sexp)))
       (load bootstrap-file nil 'nomessage))
     (straight-use-package 'use-package)
     (require 'use-package)
     (setq use-package-always-ensure t)
   #+end_src
+
 * Miscellanous Configuration
 ** Diminish Mode
 #+begin_src emacs-lisp
@@ -34,6 +35,7 @@
       :config
       (require 'diminish))
 #+end_src
+
 ** GCMH
 #+begin_src emacs-lisp
   (use-package gcmh
@@ -46,12 +48,13 @@
    Make sure we don't clutter the current directory with backup saves, keep them all somewhere else
    #+begin_src emacs-lisp
      (setq backup-by-copying t
-	   backup-directory-alist '(("." . "~/.saves/"))
-	   delete-old-versions t
-	   kept-new-versions 6
-	   kept-old-versions 2
-	   version-control t)
+           backup-directory-alist '(("." . "~/.saves/"))
+           delete-old-versions t
+           kept-new-versions 6
+           kept-old-versions 2
+           version-control t)
    #+end_src
+
 ** Custom file configuration
    Keep a custom file for =customize= functionality, keep it out of init.el
    #+begin_src emacs-lisp
@@ -60,6 +63,7 @@
        (write-region "" 0 custom-file))
      (load-file custom-file)
    #+end_src
+
 ** Spelling, bell, exec-path, indent, =yes-or-no-p=, etc
    #+begin_src emacs-lisp
      (add-to-list 'exec-path "~/.rustup/toolchains/nightly-aarch64-apple-darwin/bin/")
@@ -95,7 +99,7 @@
     (use-package eyebrowse
       :straight t)
   #+end_src
-   
+
 * Aesthetics
   #+begin_src emacs-lisp
     (use-package moe-theme
@@ -176,6 +180,7 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
      (use-package yasnippet-snippets
        :straight t)
    #+end_src
+
 *** Tree sit
 #+begin_src emacs-lisp
   (setq treesit-language-source-alist
@@ -204,6 +209,7 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
               (message "`%s' parser was installed." lang)
               (sit-for 0.75))))
 #+end_src
+
 ** LSP
    #+begin_src emacs-lisp
      (use-package lsp-mode
@@ -222,6 +228,7 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
      (use-package dap-mode
        :straight t)
    #+end_src
+
 ** Languages
 *** Python
 *** C/C++
@@ -233,17 +240,20 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
         :config
         (setq lsp-rust-server 'rust-analyzer))
     #+end_src
+
 *** Nix
     #+begin_src emacs-lisp
       (use-package nix-mode
-	:straight t)
+        :straight t)
     #+end_src
+
 *** Javascript
 #+begin_src emacs-lisp
   (use-package js2-mode
     :straight t
     :hook (js2-mode . lsp))
 #+end_src
+
 *** Typescript
 #+begin_src emacs-lisp
   (use-package typescript-mode
