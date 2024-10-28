@@ -273,6 +273,13 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
         :hook (haskell-mode . lsp))
     #+end_src
 
+*** Dhall
+#+begin_src emacs-lisp
+  (use-package dhall-mode
+    :straight t
+    :hook ((dhall-moe . lsp)))
+#+end_src
+
 * Org Mode
   #+begin_src emacs-lisp
     (setq org-clock-persist 'history)
