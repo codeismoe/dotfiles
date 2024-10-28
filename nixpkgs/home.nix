@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 {
-
   programs.home-manager.enable = true;
   home.stateVersion = "23.11";
   home.username = "patchwork";
@@ -9,43 +8,44 @@
 
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
-    discord
-    nodejs
-    signal-desktop
-    curl
-    firefox
-    kitty
-    any-nix-shell
-    emacs
-    iosevka
     (nerdfonts.override { fonts = [ "Iosevka" "Inconsolata" ]; })
-    ispell
-    spotify
-    wget
-    unzip
-    ripgrep
-    automake
-    maim
-    rustup
-    clang
-    brightnessctl
-    ghc
-    cabal-install
-    haskell-language-server
-    clang-tools
-    gnumake
+    any-nix-shell
     aspell
     aspellDicts.en
     aspellDicts.en-computers
-    python3
-    nethack
+    automake
+    brightnessctl
+    cabal-install
+    clang
+    clang-tools
+    curl
+    discord
+    emacs
+    firefox
+    ghc
+    gnumake
     graphviz
+    haskell-language-server
+    iosevka
+    ispell
+    kitty
+    maim
+    nethack
+    nodejs
+    python3
     qemu
+    ripgrep
+    rustup
+    signal-desktop
+    silver-searcher
+    spotify
+    unzip
+    wget
   ];
 
   programs.tmux = {
-	  enable = true;
-	  escapeTime = 0;
+    enable = true;
+    escapeTime = 0;
   };
 
   programs.direnv = {
@@ -53,10 +53,10 @@
   };
 
   programs.git = {
-	  enable = true;
-	  userName = "Cat Brick";
-	  userEmail = "me@lily.bike";
-	  ignores = [ ".DS_Store" "*~" "*.swp" ".vim"];
+    enable = true;
+    userName = "Cat Brick";
+    userEmail = "me@lily.bike";
+    ignores = [ ".DS_Store" "*~" "*.swp" ".vim"];
   };
 
   programs.fish = {
@@ -65,14 +65,10 @@
         any-nix-shell fish --info-right | source
         starship init fish | source
       '';
-
     plugins = [];
   };
 
   programs.starship = {
     enable = true;
   };
-
-  services.lorri.enable = true;
-  
 }
