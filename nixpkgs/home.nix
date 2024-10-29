@@ -41,6 +41,7 @@
     spotify
     unzip
     wget
+    texliveFull
   ];
 
   programs.tmux = {
