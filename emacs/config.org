@@ -64,6 +64,15 @@
      (load-file custom-file)
    #+end_src
 
+** Re-use windows for buffer changing
+#+begin_src emacs-lisp
+  (customize-set-variable 'display-buffer-base-action
+    '((display-buffer-reuse-window display-buffer-same-window)
+      (reusable-frames . t)))
+
+  (customize-set-variable 'even-window-sizes nil)
+#+end_src
+
 ** Spelling, bell, exec-path, indent, =yes-or-no-p=, etc
    #+begin_src emacs-lisp
      (add-to-list 'exec-path "~/.rustup/toolchains/nightly-aarch64-apple-darwin/bin/")
@@ -96,8 +105,14 @@
       :straight t
       :config (direnv-mode))
 
-    (use-package eyebrowse
-      :straight t)
+    (use-package perspective
+      :straight t
+      :bind ("C-x C-b" . persp-list-buffers)
+      :custom (persp-mode-prefix-key (kbd "C-x x"))
+      :init (persp-mode 1))
+
+    (use-package winner
+      :config (winner-mode 1))
   #+end_src
 
 * Aesthetics
@@ -216,6 +231,8 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
        :straight t
        :init
        (setq lsp-keymap-prefix "C-c l")
+       (setq lsp-modeline-diagnostics-scope :workspace)
+       (lsp-modeline-code-actions-mode 1)
        :hook ((lsp-mode . lsp-enable-which-key-integration))
        :commands lsp)
 
@@ -292,6 +309,20 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
 
 * Org Mode
   #+begin_src emacs-lisp
-    (setq org-clock-persist 'history)
     (org-clock-persistence-insinuate)
+    (define-key global-map "\C-cl" 'org-store-link)
+    (define-key global-map "\C-ca" 'org-agenda)
+    (define-key global-map "\C-cc" 'org-capture)
+    (setq org-log-done t
+          org-clock-persist 'historycc
+          org-directory "~/org/"
+          org-agenda-files (list "todo.org")
+          org-capture-templates
+          '(("t" "Add Task" entry (file+headline "todo.org" "Tasks")
+             "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
+            ("n" "Add Note" entry (file+headline "todo.org" "Notes")
+             "** NOTE %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n"))
+          org-tags-exclude-from-inheritance (list "project")
+          org-todo-keywords '((sequence "TODO" "|" "DONE")
+                              (sequence "|" "CANCELLED")))
   #+end_src
