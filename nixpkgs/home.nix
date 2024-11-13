@@ -20,28 +20,33 @@
     clang-tools
     curl
     discord
+    docker-compose
     emacs
+    emacsPackages.mu4e
     firefox
     ghc
+    glib
     gnumake
-    graphviz
     haskell-language-server
+    htop
     iosevka
     ispell
     kitty
     maim
+    meson
+    mu
     nethack
     nodejs
     python3
     qemu
     ripgrep
     rustup
-    signal-desktop
     silver-searcher
     spotify
+    texliveFull
     unzip
     wget
-    texliveFull
+    ghostscript
   ];
 
   programs.tmux = {
@@ -68,6 +73,8 @@
       '';
     plugins = [];
   };
+
+  services.lorri.enable = true;
 
   programs.starship = {
     enable = true;

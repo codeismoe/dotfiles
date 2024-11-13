@@ -20,7 +20,7 @@
 
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
-  
+
   services.xserver = {
     enable = true;
     videoDrivers = ["nvidia"];
@@ -58,6 +58,8 @@
     };
   };
 
+  services.offlineimap.enable = true;
+
   services.pipewire = {
     enable = true;
     pulse.enable = true;
@@ -69,14 +71,16 @@
 
   users.users.patchwork = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "audio" "video" "power" "games" ];
+    extraGroups = [ "docker" "wheel" "audio" "video" "power" "games" ];
     shell = pkgs.fish;
   };
 
-  environment.systemPackages = [ pkgs.vim ];
+  environment.systemPackages = [ pkgs.vim pkgs.zlib ];
 
   services.openssh.enable = true;
-  
+
+  virtualisation.docker.enable = true;
+
   programs = {
     fish.enable = true;
     dconf.enable = true;
