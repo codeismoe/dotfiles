@@ -113,6 +113,13 @@
 
     (use-package winner
       :config (winner-mode 1))
+
+    (use-package avy
+      :straight t
+      :bind (("C-;" . avy-goto-char-1)
+             ("C-:" . avy-goto-char-2)
+             ("C-'" . avy-goto-char-timer))
+      :config (require 'avy))
   #+end_src
 
 * Aesthetics
@@ -236,17 +243,27 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
        :hook ((lsp-mode . lsp-enable-which-key-integration))
        :commands lsp)
 
-     (use-package lsp-ui :straight t)
+     (use-package lsp-ui
+       :straight t
+       :commands lsp-ui-mode)
 
      (use-package helm-lsp
        :straight t
        :commands hlm-lsp-workspace-symbol)
 
      (use-package dap-mode
-       :straight t)
+       :straight t
+       :after lsp-mode
+       :config (dap-auto-configure-mode))
    #+end_src
 
 ** Languages
+*** Dockerfile
+#+begin_src emacs-lisp
+  (use-package dockerfile-mode
+    :straight t)
+#+end_src
+
 *** Python
 *** C/C++
 *** Rust
@@ -307,6 +324,37 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
     :hook ((dhall-moe . lsp)))
 #+end_src
 
+*** Yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :straight t)
+#+end_src
+
+*** Kotlin
+#+begin_src emacs-lisp
+  (use-package kotlin-mode
+    :straight t)
+#+end_src
+
+*** Java
+#+begin_src emacs-lisp
+  (use-package lsp-java
+    :straight t
+    :hook ((java-mode . lsp))
+    :config
+    (setq lsp-java-jdt-ls-prefer-native-command t
+          lsp-java-jdt-download-url "https://www.eclipse.org/downloads/download.php?file=/jdtls/milestones/1.41.0/jdt-language-server-1.41.0-202410311350.tar.gz"))
+
+  (use-package dap-java
+    :ensure nil)
+#+end_src
+
+* mu
+installed out of band with nix :/
+#+begin_src emacs-lisp
+  (require 'mu4e)
+#+end_src
+
 * Org Mode
   #+begin_src emacs-lisp
     (org-clock-persistence-insinuate)
@@ -319,10 +367,13 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
           org-agenda-files (list "todo.org")
           org-capture-templates
           '(("t" "Add Task" entry (file+headline "todo.org" "Tasks")
-             "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
+             "** TASK %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
             ("n" "Add Note" entry (file+headline "todo.org" "Notes")
-             "** NOTE %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n"))
+             "** %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n"))
           org-tags-exclude-from-inheritance (list "project")
-          org-todo-keywords '((sequence "TODO" "|" "DONE")
-                              (sequence "|" "CANCELLED")))
+          org-todo-keywords '(
+                              ;; once off tasks--daily things, etc.
+                              (sequence "TASK" "|" "FNSH" "CANC")
+                              ;; project statuses
+                              (sequence "TODO" "WAIT" "NEXT" "|" "DONE" )))
   #+end_src
