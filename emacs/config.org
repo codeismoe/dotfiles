@@ -131,7 +131,8 @@
     (menu-bar-mode (if (eq system-type 'darwin) 1 -1))
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
-    (set-frame-font "Iosevka 14")
+    (add-to-list 'default-frame-alist '(font . "Fira Code Nerd Font 12"))
+    (set-frame-font "Fira Code Nerd Font" nil t)
   #+end_src
 
 * Helm
