@@ -1,5 +1,13 @@
 # i3 config file (v4)
 
+# Import the most important environment variables into the D-Bus and systemd
+# user environments (e.g. required for screen sharing and Pinentry prompts):
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
+
+# enable systemd-integration
+exec "systemctl --user import-environment {,WAYLAND_}DISPLAY SWAYSOCK; systemctl --user start sway-session.target"
+exec swaymsg -t subscribe '["shutdown"]' && systemctl --user stop sway-session.target
+
 set $mod Mod4
 
 font pango:Iosevka 11
@@ -9,7 +17,7 @@ font pango:Iosevka 11
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
 # exec --no-startup-id systemctl --user import-environment PATH
-output "*" bg ./bg-1.jpg fill
+output "*" bg ./bg-3.jpg fill
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3statuspn

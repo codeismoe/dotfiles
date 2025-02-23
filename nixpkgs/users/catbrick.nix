@@ -46,6 +46,16 @@
     wget
     openjdk
     blueman
+    zoom-us
+    dotnetCorePackages.dotnet_8.sdk
+    omnisharp-roslyn
+    deluge
+    texliveFull
+    mpv
+    maptool
+    vintagestory
+    jq
+    file
   ];
 
   programs.tmux = {
@@ -55,6 +65,7 @@
 
   programs.direnv = {
     enable = true;
+    nix-direnv.enable = true;
   };
 
   programs.git = {
@@ -76,4 +87,11 @@
   programs.starship = {
     enable = true;
   };
+
+  programs.offlineimap = {
+    enable = true;
+  };
+
+  services.lorri.enable = true;
+  services.emacs.enable = true;
 }

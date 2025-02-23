@@ -1,15 +1,15 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
+
 let
   sway-conf = pkgs.writeText "sway-regreet-config" ''
     exec "${config.programs.regreet.package}/bin/regreet; ${config.programs.sway.package}/bin/swaymsg exit"
     include /etc/sway/config.d/*
   '';
 
-   sway-launcher = pkgs.writeScript "sway-launcher.sh" ''
+  sway-launcher = pkgs.writeScript "sway-launcher.sh" ''
     #!${pkgs.bash}/bin/bash
 
     source /etc/profile
@@ -25,13 +25,10 @@ let
     export XDG_CURRENT_DESKTOP=sway
     export XDG_SESSION_DESKTOP=sway
     export XDG_SESSION_TYPE=wayland
-    export WAYLAND_DISPLAY=wayland-1
-    export DISPLAY=:0
     export GIO_EXTRA_MODULES=${pkgs.gvfs}/lib/gio/modules
 
     exec ${pkgs.sway}/bin/sway --config ${sway-conf}
   '';
-
 in
 {
   imports =
@@ -39,12 +36,16 @@ in
       ./hardware-configuration.nix
     ];
 
+  # used for vintage story lol
+  nixpkgs.config.permittedInsecurePackages = [
+    "dotnet-runtime-7.0.20"
+  ];
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "catbrick"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
   nix.settings.experimental-features = [ "nix-command flakes" ];
 
   hardware.graphics = {
@@ -54,19 +55,14 @@ in
 
   hardware.bluetooth.enable = true;
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
+  networking.hostName = "catbrick";
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
+
   time.timeZone = "America/New_York";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
     LC_IDENTIFICATION = "en_US.UTF-8";
@@ -90,9 +86,6 @@ in
     variant = "";
   };
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -101,13 +94,8 @@ in
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
+
   fonts.packages = with pkgs; [
     nerd-fonts.iosevka
     nerd-fonts.fira-code
@@ -118,8 +106,10 @@ in
     fira-code
     fira-code-symbols
   ];
-  services.offlineimap.enable = true;
+
   services.dbus.enable = true;
+  services.desktopManager.plasma6.enable = true;
+
   xdg.icons.enable = true;
   xdg.mime.enable = true;
   xdg.portal = {
@@ -134,14 +124,10 @@ in
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 
   };
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.groups = {
     catbrick = {};
-    lily = {};
-    # me = {};
   };
 
   users.users.catbrick = {
@@ -151,14 +137,6 @@ in
     extraGroups = [ "networkmanager" "docker" "wheel" "audio" "video" "power" "games" "libvirtd" ];
     shell = pkgs.fish;
   };
-
-  # users.users.lily = {
-  #   isNormalUser = true;
-  #   group = "lily";
-  #   description = "Lily Steidel";
-  #   extraGroups = [ "me" "networkmanager" "docker" "wheel" "audio" "video" "power" "games" "libvirtd" ];
-  #   shell = pkgs.fish;
-  # };
 
   nixpkgs.config.allowUnfree = true;
 
@@ -172,6 +150,9 @@ in
     rofi
     waybar
     networkmanagerapplet
+    wineWowPackages.stable
+    winetricks
+    wineWowPackages.waylandFull
   ];
 
   # Enable the gnome-keyring secrets vault.
@@ -179,6 +160,7 @@ in
   services.gnome.gnome-keyring.enable = true;
 
   programs = {
+    nix-ld.enable = true;
     regreet.enable = true;
     fish.enable = true;
     dconf.enable = true;
@@ -192,7 +174,7 @@ in
     steam.enable = true;
   };
 
- services.greetd = {
+  services.greetd = {
     enable = true;
     settings = {
       default_session = {

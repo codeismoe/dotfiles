@@ -109,7 +109,7 @@
       :straight t
       :bind ("C-x C-b" . persp-list-buffers)
       :custom (persp-mode-prefix-key (kbd "C-x x"))
-      :init (persp-mode 1))
+      :init (persp-mode 0))
 
     (use-package winner
       :config (winner-mode 1))
@@ -259,13 +259,32 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
    #+end_src
 
 ** Languages
+
+*** Ocaml
+#+begin_src emacs-lisp
+  (use-package merlin
+    :straight t
+    :hook
+    (tuareg-mode . merlin-mode)
+    (merlin-mode . company-mode)
+    :custom
+    (merlin-command "ocamlmerlin"))
+
+  (use-package tuareg
+    :straight t)
+
+  (use-package utop
+    :straight t
+    :hook
+    (tuareg-mode . utop-minor-mode))
+
+#+end_src
 *** Dockerfile
 #+begin_src emacs-lisp
   (use-package dockerfile-mode
     :straight t)
 #+end_src
 
-*** Python
 *** C/C++
 *** Rust
     #+begin_src emacs-lisp
@@ -334,6 +353,14 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
 *** Kotlin
 #+begin_src emacs-lisp
   (use-package kotlin-mode
+    :straight t)
+#+end_src
+
+*** C#
+#+begin_src emacs-lisp
+  (use-package csproj-mode
+    :straight t)
+  (use-package omnisharp
     :straight t)
 #+end_src
 
