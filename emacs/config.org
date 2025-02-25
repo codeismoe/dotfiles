@@ -45,7 +45,8 @@
 #+end_src
 
 ** Backup configuration
-   Make sure we don't clutter the current directory with backup saves, keep them all somewhere else
+   Make sure we don't clutter the current directory with backup saves,
+   keep them all somewhere else
    #+begin_src emacs-lisp
      (setq backup-by-copying t
            backup-directory-alist '(("." . "~/.saves/"))
@@ -75,12 +76,10 @@
 
 ** Spelling, bell, exec-path, indent, =yes-or-no-p=, etc
    #+begin_src emacs-lisp
-     (add-to-list 'exec-path "~/.rustup/toolchains/nightly-aarch64-apple-darwin/bin/")
      (setq ispell-program-name "aspell")
      (setq ring-bell-function 'ignore)
      (defalias 'yes-or-no-p #'y-or-n-p)
      (setq-default indent-tabs-mode nil)
-     (setq mac-command-modifier 'meta)
    #+end_src
 
 * Utilities
@@ -128,7 +127,7 @@
       :straight t
       :config (moe-dark))
 
-    (menu-bar-mode (if (eq system-type 'darwin) 1 -1))
+    (menu-bar-mode -1)
     (tool-bar-mode -1)
     (scroll-bar-mode -1)
     (add-to-list 'default-frame-alist '(font . "Fira Code Nerd Font 12"))
@@ -139,42 +138,43 @@
 The decision over helm vs ivy is something I need to figure out,
 currently I'm using Helm.
 
-The ~display-bufer-alist~ configuration makes helm appear at the bottom of the screen
-  #+begin_src emacs-lisp
-    (use-package helm
-      :straight t
-      :diminish helm-mode
-      :bind (("M-x" . helm-M-x)
-             ("C-x C-f" . helm-find-files))
-      :config
-      (helm-mode 1)
-      (add-to-list 'display-buffer-alist
-                   `(,(rx bos "*helm" (* not-newline) "*" eos)
-                     (display-buffer-in-side-window)
-                     (inhibit-same-window . t)
-                     (window-height . 0.3))))
+The ~display-bufer-alist~ configuration makes helm appear at the
+bottom of the screen
+#+begin_src emacs-lisp
+  (use-package helm
+    :straight t
+    :diminish helm-mode
+    :bind (("M-x" . helm-M-x)
+           ("C-x C-f" . helm-find-files))
+    :config
+    (helm-mode 1)
+    (add-to-list 'display-buffer-alist
+                 `(,(rx bos "*helm" (* not-newline) "*" eos)
+                   (display-buffer-in-side-window)
+                   (inhibit-same-window . t)
+                   (window-height . 0.3))))
 
-    (use-package helm-swoop
-      :straight t
-      :bind (("M-i" . helm-swoop)
-             ("M-I" . helm-swoop-back-to-last-point)
-             ("C-c M-i" . helm-multi-swoop)
-             ("C-x M-i" . helm-multi-swoop-all)
-             :map isearch-mode-map
-             ("M-i" . helm-swoop-from-isearch)
-             :map helm-swoop-map
-             ("M-i" . helm-multi-swoop-all-from-helm-swoop)
-             ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop)
-             ("C-r" . helm-previous-line)
-             ("C-s" . helm-next-line)
-             :map helm-multi-swoop-map
-             ("C-r" . helm-previous-line)
-             ("C-s" . helm-next-line))
-      :config
-      (setq helm-multi-swoop-edit-save t))
+  (use-package helm-swoop
+    :straight t
+    :bind (("M-i" . helm-swoop)
+           ("M-I" . helm-swoop-back-to-last-point)
+           ("C-c M-i" . helm-multi-swoop)
+           ("C-x M-i" . helm-multi-swoop-all)
+           :map isearch-mode-map
+           ("M-i" . helm-swoop-from-isearch)
+           :map helm-swoop-map
+           ("M-i" . helm-multi-swoop-all-from-helm-swoop)
+           ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop)
+           ("C-r" . helm-previous-line)
+           ("C-s" . helm-next-line)
+           :map helm-multi-swoop-map
+           ("C-r" . helm-previous-line)
+           ("C-s" . helm-next-line))
+    :config
+    (setq helm-multi-swoop-edit-save t))
 
-    (use-package helm-ag
-      :straight t)
+  (use-package helm-ag
+    :straight t)
 #+end_src
 
 * Programming
@@ -260,8 +260,8 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
 
 ** Languages
 
-*** Ocaml
-#+begin_src emacs-lisp
+*** Ocaml                                                            :unused:
+#+begin_src emacs-lisp :tangle no
   (use-package merlin
     :straight t
     :hook
@@ -279,13 +279,13 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
     (tuareg-mode . utop-minor-mode))
 
 #+end_src
+
 *** Dockerfile
 #+begin_src emacs-lisp
   (use-package dockerfile-mode
     :straight t)
 #+end_src
 
-*** C/C++
 *** Rust
     #+begin_src emacs-lisp
       (use-package rust-mode
@@ -327,7 +327,6 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
 #+end_src
 
 #+RESULTS:
-*** Web mode
 *** Haskell
     #+begin_src emacs-lisp
       (use-package lsp-haskell
@@ -337,8 +336,8 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
         :hook (haskell-mode . lsp))
     #+end_src
 
-*** Dhall
-#+begin_src emacs-lisp
+*** Dhall                                                            :unused:
+#+begin_src emacs-lisp :tangle no
   (use-package dhall-mode
     :straight t
     :hook ((dhall-moe . lsp)))
@@ -350,22 +349,16 @@ The ~display-bufer-alist~ configuration makes helm appear at the bottom of the s
     :straight t)
 #+end_src
 
-*** Kotlin
-#+begin_src emacs-lisp
-  (use-package kotlin-mode
-    :straight t)
-#+end_src
-
-*** C#
-#+begin_src emacs-lisp
+*** C#                                                               :unused:
+#+begin_src emacs-lisp :tangle no
   (use-package csproj-mode
     :straight t)
   (use-package omnisharp
     :straight t)
 #+end_src
 
-*** Java
-#+begin_src emacs-lisp
+*** Java                                                             :unused:
+#+begin_src emacs-lisp :tangle no
   (use-package lsp-java
     :straight t
     :hook ((java-mode . lsp))
@@ -403,5 +396,5 @@ installed out of band with nix :/
                               ;; once off tasks--daily things, etc.
                               (sequence "TASK" "|" "FNSH" "CANC")
                               ;; project statuses
-                              (sequence "TODO" "WAIT" "NEXT" "|" "DONE" )))
+                              (sequence "TODO" "|" "DONE" )))
   #+end_src
