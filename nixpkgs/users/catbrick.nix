@@ -8,20 +8,22 @@
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
     any-nix-shell
-    roboto
     aspell
     aspellDicts.en
     aspellDicts.en-computers
     automake
+    blueman
     brightnessctl
     cabal-install
     clang
     clang-tools
     curl
+    deluge
     discord
     docker-compose
     emacs
     emacsPackages.mu4e
+    file
     firefox
     ghc
     ghostscript
@@ -30,32 +32,25 @@
     haskell-language-server
     htop
     ispell
+    jq
     kitty
-    maim
     meson
+    mpv
     mu
     nethack
     nodejs
+    openjdk
     pavucontrol
     python3
     qemu
     ripgrep
+    roboto
     rustup
     silver-searcher
-    unzip
-    wget
-    openjdk
-    blueman
-    zoom-us
-    dotnetCorePackages.dotnet_8.sdk
-    omnisharp-roslyn
-    deluge
     texliveFull
-    mpv
-    maptool
+    unzip
     vintagestory
-    jq
-    file
+    wget
   ];
 
   programs.tmux = {

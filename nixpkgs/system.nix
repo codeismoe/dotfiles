@@ -87,7 +87,7 @@ in
   };
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -187,6 +187,52 @@ in
   virtualisation.docker.enable = true;
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
+
+  systemd = {
+    services = {
+      "nixos-update" = {
+        script = ''
+          cd /home/catbrick/src/dotfiles/nixpkgs/
+          ${pkgs.lix}/bin/nix flake update
+          ${pkgs.lix}/bin/nixos-rebuild switch --flake .
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+        };
+      };
+
+      "nixos-gc" = {
+        script = ''
+          ${pkgs.lix}/bin/nix-collect-garbage --delete-older-than 2d
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+        };
+      };
+    };
+    timers = {
+      "nixos-update" = {
+        wantedBy = [ "timers.target" ];
+
+        timerConfig = {
+          OnCalendar = "weekly";
+          Persistent = "true";
+          Unit = "nixos-update.service";
+        };
+      };
+
+      "nixos-gc" = {
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "weekly";
+          Persistent = "true";
+          Unit = "nixos-gc.service";
+        };
+      };
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
