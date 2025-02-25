@@ -153,6 +153,9 @@ in
     wineWowPackages.stable
     winetricks
     wineWowPackages.waylandFull
+
+    # added for systemd services
+    git
   ];
 
   # Enable the gnome-keyring secrets vault.
@@ -190,11 +193,25 @@ in
 
   systemd = {
     services = {
-      "nixos-update" = {
+      ### test script for services. Replace service with tested one
+      # sudo nixos-rebuild switch --flake ~/src/dotfiles/nixpkgs/. && sudo systemctl start nixos-flake-update.service
+      # systemctl status nixos-flake-update.service
+
+      "nixos-flake-update" = {
         script = ''
           cd /home/catbrick/src/dotfiles/nixpkgs/
-          ${pkgs.lix}/bin/nix flake update
-          ${pkgs.lix}/bin/nixos-rebuild switch --flake .
+          PATH="${pkgs.git}/bin:$PATH" ${pkgs.lix}/bin/nix flake update
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = "root";
+        };
+      };
+      # TODO
+      # tons of boiler plate here, very easily fixed
+      "nixos-gc" = {
+        script = ''
+          ${pkgs.lix}/bin/nix-collect-garbage --delete-older-than 2d
         '';
         serviceConfig = {
           Type = "oneshot";
@@ -202,9 +219,9 @@ in
         };
       };
 
-      "nixos-gc" = {
+      "nixos-channel-update" = {
         script = ''
-          ${pkgs.lix}/bin/nix-collect-garbage --delete-older-than 2d
+          ${pkgs.lix}/bin/nix-channel --update
         '';
         serviceConfig = {
           Type = "oneshot";
@@ -229,6 +246,15 @@ in
           OnCalendar = "weekly";
           Persistent = "true";
           Unit = "nixos-gc.service";
+        };
+      };
+
+      "nixos-channel-update" = {
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "weekly";
+          Persistent = "true";
+          Unit = "nixos-channel-update.service";
         };
       };
     };
