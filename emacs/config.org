@@ -79,7 +79,7 @@ Keep a custom file for =customize= functionality, keep it out of init.el
   (setq ispell-program-name "aspell")
   (setq ring-bell-function 'ignore)
   (defalias 'yes-or-no-p #'y-or-n-p)
-  (setq-default indent-tabs-mode nil)
+ (setq-default indent-tabs-mode nil)
 #+end_src
 
 * Utilities
@@ -119,6 +119,16 @@ Keep a custom file for =customize= functionality, keep it out of init.el
            ("C-:" . avy-goto-char-2)
            ("C-'" . avy-goto-char-timer))
     :config (require 'avy))
+
+  (use-package undo-tree
+    :straight t
+    :diminish undo-tree-mode
+    :config
+    (let ((save-dir (concat user-emacs-directory "undotree/")))
+      (unless (file-exists-p save-dir)
+        (make-directory save-dir))
+      (setq undo-tree-history-directory-alist (cl-acons "." save-dir nil)))
+    (global-undo-tree-mode 1))
 #+end_src
 
 * Aesthetics
@@ -340,13 +350,9 @@ installed out of band with nix :/
         org-agenda-files (list "todo.org")
         org-capture-templates
         '(("t" "Add Task" entry (file+headline "todo.org" "Tasks")
-           "** TASK %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
+           "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
           ("n" "Add Note" entry (file+headline "todo.org" "Notes")
            "** %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n"))
         org-tags-exclude-from-inheritance (list "project")
-        org-todo-keywords '(
-                            ;; once off tasks--daily things, etc.
-                            (sequence "TASK" "|" "FNSH" "CANC")
-                            ;; project statuses
-                            (sequence "TODO" "|" "DONE" )))
+        org-todo-keywords '((sequence "TODO" "|" "DONE" "CANC")))
 #+end_src
