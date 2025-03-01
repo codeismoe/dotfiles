@@ -134,7 +134,17 @@ in
     isNormalUser = true;
     group = "catbrick";
     description = "CatBrick";
-    extraGroups = [ "networkmanager" "docker" "wheel" "audio" "video" "power" "games" "libvirtd" ];
+    extraGroups = [
+      "networkmanager"
+      "docker"
+      "wheel"
+      "input"
+      "audio"
+      "video"
+      "power"
+      "games"
+      "libvirtd"
+    ];
     shell = pkgs.fish;
   };
 
@@ -153,8 +163,6 @@ in
     wineWowPackages.stable
     winetricks
     wineWowPackages.waylandFull
-
-    # added for systemd services
     git
   ];
 

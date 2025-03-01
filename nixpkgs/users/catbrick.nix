@@ -33,7 +33,6 @@
     htop
     ispell
     jq
-    kitty
     meson
     mpv
     mu
@@ -51,6 +50,7 @@
     unzip
     vintagestory
     wget
+    neofetch
   ];
 
   programs.tmux = {
@@ -84,6 +84,14 @@
   };
 
   programs.offlineimap = {
+    enable = true;
+  };
+
+  programs.kitty = {
+    enable = true;
+  };
+
+  programs.waybar = {
     enable = true;
   };
 
