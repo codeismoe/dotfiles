@@ -36,6 +36,7 @@
     meson
     mpv
     mu
+    neofetch
     nethack
     nodejs
     openjdk
@@ -50,7 +51,7 @@
     unzip
     vintagestory
     wget
-    neofetch
+    ripgrep
   ];
 
   programs.tmux = {

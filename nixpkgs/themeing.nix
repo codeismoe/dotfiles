@@ -13,13 +13,20 @@ in
           use-ifd = "always";
         });
       };
+
       waybar = let
         waybar-file = builtins.readFile "${inputs.config-files.packages.x86_64-linux.default.waybar-config.outPath}/waybar.json";
+        colors = builtins.readFile (config.scheme inputs.tinted-waybar);
+        styles = builtins.readFile "${inputs.config-files.packages.x86_64-linux.default.waybar-config.outPath}/waybar.css";
       in {
-        style = builtins.readFile (config.scheme inputs.tinted-waybar);
+        style = ''
+          ${colors}
+          ${styles}
+        '';
         settings = [(builtins.fromJSON waybar-file)];
       };
     };
+    
     wayland.windowManager.sway = let
       sway-config = builtins.readFile "${inputs.config-files.packages.x86_64-linux.default.sway-config.outPath}/sway-config";
     in {
