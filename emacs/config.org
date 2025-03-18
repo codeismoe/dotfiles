@@ -129,6 +129,11 @@ Keep a custom file for =customize= functionality, keep it out of init.el
         (make-directory save-dir))
       (setq undo-tree-history-directory-alist (cl-acons "." save-dir nil)))
     (global-undo-tree-mode 1))
+
+  (use-package frames-only-mode
+    :straight t
+    :config
+    (frames-only-mode t))
 #+end_src
 
 * Aesthetics
@@ -149,7 +154,7 @@ Keep a custom file for =customize= functionality, keep it out of init.el
 The decision over helm vs ivy is something I need to figure out,
 currently I'm using Helm.
 
-The ~display-bufer-alist~ configuration makes helm appear at the
+The ~display-buffer-alist~ configuration makes helm appear at the
 bottom of the screen
 #+begin_src emacs-lisp
   (use-package helm
@@ -442,12 +447,30 @@ installed out of band with nix :/
         org-directory "~/org/"
         org-agenda-files (list "todo.org")
         org-refile-targets '((nil . (:maxlevel 5)))
+        org-agenda-search-view-max-outline-level 3
         org-capture-templates
         '(("t" "Add Task" entry (file+headline "todo.org" "Inbox")
            "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
           ("n" "Add Note" entry (file+headline "todo.org" "Inbox")
            "** %?\n:PROPERTIES:\n:CATEGORY: Note\n:ENTERED: %u\n:END:\n"))
         org-tags-exclude-from-inheritance (list "project")
-        org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-                            (sequence "WAIT(w@/!)" "APPT" "INACTIVE" "|" "CANC(c@!)")))
+        org-todo-keywords '((sequence "TODO(t)"    ;; Later
+                                      "NEXT(n)"    ;; Now
+                                      "|"          ;;
+                                      "DONE(d!)"   ;; Completed
+                                      )
+                            (sequence "WAIT(w@/!)" ;; Waiting on someone else
+                                      "BLCK(b@/!)" ;; Blocked by something
+                                      "APPT"       ;; Is an Appointment
+                                      "FUTR"       ;; Maybe Someday
+                                      "|"          ;;
+                                      "CANC(c@)"   ;; Cancelled
+                                      "NOTE"       ;; Its a note
+                                      )))
+
+  (require 'org-crypt)
+  (org-crypt-use-before-save-magic)
+  (setq org-tags-exclude-from-inheritance '("crypt"))
+
+  (setq org-crypt-key nil)
 #+end_src
