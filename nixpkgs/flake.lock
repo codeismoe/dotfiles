@@ -41,7 +41,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-SQFfyyyVSXhSJ3dSckumivNESkWhYt3ObziskptcPA0=",
+        "narHash": "sha256-hobzxSvsv6f6fHKBcgLX33qMzOSXz6vZYwxP630XYRo=",
         "path": "config/",
         "type": "path"
       },
@@ -122,11 +122,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1741217763,
-        "narHash": "sha256-g/TrltIjFHIjtzKY5CJpoPANfHQWDD43G5U1a/v5oVg=",
+        "lastModified": 1742305478,
+        "narHash": "sha256-iYCinzZnnUeCkZ031qGRwPdwRsqW6o9Y0MgGpA7Zva4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "486b066025dccd8af7fbe5dd2cc79e46b88c80da",
+        "rev": "fb74bb76d94a6c55632376c931fc108131260ee9",
         "type": "github"
       },
       "original": {
@@ -188,11 +188,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1741010256,
-        "narHash": "sha256-WZNlK/KX7Sni0RyqLSqLPbK8k08Kq7H7RijPJbq9KHM=",
+        "lastModified": 1741513245,
+        "narHash": "sha256-7rTAMNTY1xoBwz0h7ZMtEcd8LELk9R5TzBPoHuhNSCk=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ba487dbc9d04e0634c64e3b1f0d25839a0a68246",
+        "rev": "e3e32b642a31e6714ec1b712de8c91a3352ce7e1",
         "type": "github"
       },
       "original": {
@@ -204,11 +204,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1741010256,
-        "narHash": "sha256-WZNlK/KX7Sni0RyqLSqLPbK8k08Kq7H7RijPJbq9KHM=",
+        "lastModified": 1742069588,
+        "narHash": "sha256-C7jVfohcGzdZRF6DO+ybyG/sqpo1h6bZi9T56sxLy+k=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "ba487dbc9d04e0634c64e3b1f0d25839a0a68246",
+        "rev": "c80f6a7e10b39afcc1894e02ef785b1ad0b0d7e5",
         "type": "github"
       },
       "original": {
@@ -280,11 +280,11 @@
     "tinted-terminal": {
       "flake": false,
       "locked": {
-        "lastModified": 1740876866,
-        "narHash": "sha256-RQtP3kP+JdHdP8st9hHhXZYXI1b3NVPX8aprdE2Pxpc=",
+        "lastModified": 1742218709,
+        "narHash": "sha256-aVsqpzNAUkDa3OQBYnCn4e15u8Uqllti/do1eEleFEo=",
         "owner": "tinted-theming",
         "repo": "tinted-terminal",
-        "rev": "58f9cdb07de4831f8247135b63b774da6c38f7cf",
+        "rev": "f3a27ffecb5e4a82b97a2826b0a2faca3ec569ca",
         "type": "github"
       },
       "original": {

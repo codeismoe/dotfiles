@@ -1,4 +1,7 @@
 {
+    "bar_id": "bar-0",
+    "ipc": true,
+
     "layer": "top", // Waybar at top layer
     "position": "bottom", // Waybar position (top|bottom|left|right)
     // "height": 32, // Waybar height (to be removed for auto height)
@@ -15,11 +18,9 @@
     ],
     "modules-right": [
         // "idle_inhibitor",
-
         "pulseaudio",
         "power-profiles-daemon",
         // "network",
-
         "cpu",
         "memory",
         // "temperature",
@@ -31,19 +32,19 @@
         "tray"
     ],
 
-     "sway/workspaces": {
-         "disable-scroll": true,
-         "all-outputs": true,
-         "warp-on-scroll": false,
-         "format": "{name}: {icon}",
-         "format-icons": {
-             "1": "",
-             "2": "",
-             "3": "",
-             "urgent": "",
-             "focused": "",
-             "default": ""
-         }
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "warp-on-scroll": false,
+        "format": "{name}: {icon}",
+        "format-icons": {
+            "1": "",
+            "2": "",
+            "3": "",
+            "urgent": "",
+            "focused": "",
+            "default": ""
+        }
     },
     // "keyboard-state": {
     //     "numlock": true,
@@ -111,15 +112,15 @@
     },
 
     "power-profiles-daemon": {
-      "format": "{icon}",
-      "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
-      "tooltip": true,
-      "format-icons": {
-        "default": "",
-        "performance": "",
-        "balanced": "",
-        "power-saver": ""
-      }
+        "format": "{icon}",
+        "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+        "tooltip": true,
+        "format-icons": {
+            "default": "",
+            "performance": "",
+            "balanced": "",
+            "power-saver": ""
+        }
     },
 
     "network": {

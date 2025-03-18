@@ -164,6 +164,8 @@ in
     winetricks
     wineWowPackages.waylandFull
     git
+    wireguard-ui
+    wireguard-tools
   ];
 
   # Enable the gnome-keyring secrets vault.
@@ -199,6 +201,8 @@ in
   virtualisation.libvirtd.enable = true;
   programs.virt-manager.enable = true;
 
+  networking.firewall.checkReversePath = false;
+  
   systemd = {
     services = {
       ### test script for services. Replace service with tested one

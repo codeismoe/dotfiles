@@ -7,6 +7,7 @@
 
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
+    google-chrome
     any-nix-shell
     aspell
     aspellDicts.en
@@ -25,10 +26,12 @@
     emacsPackages.mu4e
     file
     firefox
+    qutebrowser
     ghc
     ghostscript
     glib
     gnumake
+    gnupg
     haskell-language-server
     htop
     ispell
@@ -44,6 +47,7 @@
     python3
     qemu
     ripgrep
+    ripgrep
     roboto
     rustup
     silver-searcher
@@ -51,7 +55,6 @@
     unzip
     vintagestory
     wget
-    ripgrep
   ];
 
   programs.tmux = {
