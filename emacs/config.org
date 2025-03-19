@@ -132,7 +132,12 @@ Keep a custom file for =customize= functionality, keep it out of init.el
 
   (use-package frames-only-mode
     :straight t
-    :config
+    :custom
+    ((frames-only-mode-kill-frame-when-buffer-killed-buffer-list
+      `("*RefTeX Select*" "*Help*" "*Popup Help*" "*Completions*" (regexp . ,(rx bos "CAPTURE-"))))
+     (frames-only-mode-use-window-functions
+      (list #'calendar #'report-emacs-bug 'checkdoc-show-diagnostics 'checkdoc 'org-compile-file 'corfu-popupinfo--show 'org-capture)))
+    :init
     (frames-only-mode t))
 #+end_src
 
@@ -473,4 +478,12 @@ installed out of band with nix :/
   (setq org-tags-exclude-from-inheritance '("crypt"))
 
   (setq org-crypt-key nil)
+  (add-to-list 'display-buffer-alist `(,(rx bos "CAPTURE-" (* not-newline) eos)
+                                       (display-buffer-pop-up-frame)))
+
+  (defun cb/capture ()
+    (interactive)
+    (let ((display-buffer-alist `(("*Org Select*" (display-buffer-pop-up-frame)))))
+      (org-capture)))
 #+end_src
+
