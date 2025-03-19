@@ -454,7 +454,7 @@ installed out of band with nix :/
         org-refile-targets '((nil . (:maxlevel 5)))
         org-agenda-search-view-max-outline-level 3
         org-capture-templates
-        '(("t" "Add Task" entry (file+headline "todo.org" "Inbox")
+        '(("t" "Add Todo" entry (file+headline "todo.org" "Inbox")
            "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
           ("n" "Add Note" entry (file+headline "todo.org" "Inbox")
            "** %?\n:PROPERTIES:\n:CATEGORY: Note\n:ENTERED: %u\n:END:\n"))
@@ -483,7 +483,9 @@ installed out of band with nix :/
 
   (defun cb/capture ()
     (interactive)
-    (let ((display-buffer-alist `(("*Org Select*" (display-buffer-pop-up-frame)))))
+    (let ((capture-frame (make-frame '((name . "*Float Capture*"))))
+          (display-buffer-alist `(("*Org Select*" (display-buffer-full-frame)))))
+      (select-frame-set-input-focus capture-frame)
       (org-capture)))
 #+end_src
 
