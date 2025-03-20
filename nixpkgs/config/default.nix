@@ -23,5 +23,8 @@
         sed "s,BACKGROUND,$out/bg.jpg," $src/sway-config > $out/sway-config
       '';
     };
-
+  emacs-config = pkgs.stdenv.mkDerivation {
+    name = "catbrick-emacs";
+    src = ./catbrick-emacs.org;
+  };
 }

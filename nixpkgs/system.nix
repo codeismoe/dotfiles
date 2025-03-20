@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 let
   sway-conf = pkgs.writeText "sway-regreet-config" ''
@@ -38,9 +38,9 @@ in
 
   # used for vintage story lol
   nixpkgs.config.permittedInsecurePackages = [
-    "dotnet-runtime-7.0.20"
+    "dotnet-runtime-7.0.20" # vintage story
   ];
-
+  nixpkgs.overlays = [inputs.emacs-overlay.overlay];
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -96,7 +96,7 @@ in
     pulse.enable = true;
   };
 
-  fonts.packages = with pkgs; [
+  fonts.packages = (with pkgs; [
     nerd-fonts.iosevka
     nerd-fonts.fira-code
     source-sans
@@ -105,7 +105,7 @@ in
     iosevka
     fira-code
     fira-code-symbols
-  ];
+  ]);
 
   services.dbus.enable = true;
   services.desktopManager.plasma6.enable = true;

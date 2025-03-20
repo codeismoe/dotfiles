@@ -1,4 +1,5 @@
 { config, pkgs, ... }:
+
 {
   programs.home-manager.enable = true;
   home.stateVersion = "23.11";
@@ -6,7 +7,9 @@
   home.homeDirectory = "/home/catbrick";
 
   fonts.fontconfig.enable = true;
-  home.packages = with pkgs; [
+  home.packages =  with pkgs; [
+    cinny-desktop
+    ledger
     google-chrome
     any-nix-shell
     aspell
@@ -22,8 +25,6 @@
     deluge
     discord
     docker-compose
-    emacs
-    emacsPackages.mu4e
     file
     firefox
     qutebrowser
@@ -38,7 +39,6 @@
     jq
     meson
     mpv
-    mu
     neofetch
     nethack
     nodejs
@@ -54,7 +54,6 @@
     texliveFull
     unzip
     vintagestory
-    wget
   ];
 
   programs.tmux = {
@@ -99,6 +98,16 @@
     enable = true;
   };
 
+  programs.emacs = {
+    enable = true;
+    package = pkgs.emacsWithPackagesFromUsePackage {
+        package = pkgs.emacs-git-pgtk;
+        config = ./init.org;
+        alwaysEnsure = true;
+        defaultInitFile = true;
+        alwaysTangle = true;
+    };
+  };
   services.lorri.enable = true;
   services.emacs.enable = true;
 }

@@ -49,7 +49,7 @@ tiling_drag titlebar
 # start a terminal
 bindsym $mod+Return exec kitty
 bindsym $mod+e exec emacsclient -c
-bindsym $mod+c exec emacsclient -F '((name . "*Float Capture*"))' -c -e "(cb/capture)"
+bindsym $mod+c exec emacsclient -F '((name . "*Float Capture*"))' -e "(cb/capture)"
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -184,4 +184,4 @@ bar {
 
 # fix ace-window switching in emacs
 focus_on_window_activation smart
-for_window [class="Emacs" title="\*Float Capture\*"] floating enable
+for_window [class="Emacs" title="\*Float Capture\*"] floating enable, focus floating
