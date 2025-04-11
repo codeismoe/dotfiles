@@ -315,6 +315,12 @@ bottom of the screen
     :hook (haskell-mode . lsp))
 #+end_src
 
+*** Elixir
+#+begin_src emacs-lisp
+  (use-package elixir-ts-mode
+    :ensure t)
+#+end_src
+
 *** Yaml
 #+begin_src emacs-lisp
   (use-package yaml-mode

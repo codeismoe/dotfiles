@@ -57,7 +57,9 @@
                 home-manager.backupFileExtension = "backup-";
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
-                home-manager.users.catbrick = import ./users/catbrick.nix;
+                home-manager.users = {
+                  catbrick = import ./users/catbrick.nix;
+                };
               }
             ];
             specialArgs = {

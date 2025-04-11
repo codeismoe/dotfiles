@@ -1,0 +1,22 @@
+IMAPAccount fastmail
+Host imap.fastmail.com
+User me@lily.bike
+PassCmd "/etc/profiles/per-user/catbrick/bin/pass Email/fastmail"
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore fastmail-remote
+Account fastmail
+
+MaildirStore fastmail-local
+SubFolders Verbatim
+Path ~/mail/fastmail/
+Inbox ~/mail/fastmail/Inbox
+
+Channel fastmail
+Far :fastmail-remote:
+Near :fastmail-local:
+Patterns *
+Create Both
+Expunge Both
+SyncState *

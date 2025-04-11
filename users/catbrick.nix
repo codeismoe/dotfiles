@@ -8,9 +8,6 @@
 
   fonts.fontconfig.enable = true;
   home.packages =  with pkgs; [
-    cinny-desktop
-    ledger
-    google-chrome
     any-nix-shell
     aspell
     aspellDicts.en
@@ -19,6 +16,7 @@
     blueman
     brightnessctl
     cabal-install
+    cinny-desktop
     clang
     clang-tools
     curl
@@ -27,25 +25,32 @@
     docker-compose
     file
     firefox
-    qutebrowser
     ghc
     ghostscript
     glib
     gnumake
     gnupg
+    google-chrome
     haskell-language-server
     htop
+    torzu
+    wdisplays
+    dolphin-emu
     ispell
     jq
+    ledger
     meson
     mpv
+    mu
     neofetch
     nethack
     nodejs
     openjdk
+    pass
     pavucontrol
     python3
     qemu
+    qutebrowser
     ripgrep
     ripgrep
     roboto
@@ -54,6 +59,8 @@
     texliveFull
     unzip
     vintagestory
+    elixir
+    elixir-ls
   ];
 
   programs.tmux = {
@@ -86,10 +93,6 @@
     enable = true;
   };
 
-  programs.offlineimap = {
-    enable = true;
-  };
-
   programs.kitty = {
     enable = true;
   };
@@ -102,12 +105,32 @@
     enable = true;
     package = pkgs.emacsWithPackagesFromUsePackage {
         package = pkgs.emacs-git-pgtk;
-        config = ./init.org;
-        alwaysEnsure = true;
+        config = ./catbrick-emacs.org;
         defaultInitFile = true;
+        alwaysEnsure = true;
         alwaysTangle = true;
     };
+    # extraPackages = epkgs: [epkgs.];
   };
+
+  programs.rofi = {
+    enable = true;
+    package = pkgs.rofi-wayland;
+    pass = {
+      enable = true;
+      package = pkgs.rofi-pass-wayland;
+    };
+  };
+
   services.lorri.enable = true;
   services.emacs.enable = true;
+  services.mbsync = {
+    enable = true;
+    configFile = ./mbsync;
+    postExec = "${pkgs.mu}/bin/mu index";
+  };
+
+  services.gpg-agent = {
+    enable = true;
+  };
 }
