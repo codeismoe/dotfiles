@@ -16,7 +16,6 @@ note: the tangle to config.el is a workaround for the community overlay
 ** GCMH
 #+begin_src emacs-lisp
   (use-package gcmh
-
     :diminish gcmh-mode
     :config (gcmh-mode 1))
 #+end_src
@@ -117,10 +116,10 @@ Keep a custom file for =customize= functionality, keep it out of init.el
 
 * Aesthetics
 #+begin_src emacs-lisp
-  (use-package base16-theme
-
+  (use-package catppuccin-theme
     :config
-    (load-theme 'base16-monokai t))
+    (setq catppuccin-flavor 'frappe)
+    (catppuccin-reload))
 
   (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -191,13 +190,11 @@ bottom of the screen
     (global-flycheck-mode 1))
 
   (use-package yasnippet
-
     :diminish yas-minor-mode
     :config
     (yas-global-mode 1))
 
-  (use-package yasnippet-snippets
-    )
+  (use-package yasnippet-snippets)
 #+end_src
 
 *** Tree sit
@@ -328,7 +325,6 @@ bottom of the screen
 #+end_src
 
 * mu
-installed out of band with nix :/
 #+begin_src emacs-lisp
   (use-package mu4e)
 #+end_src
@@ -428,51 +424,53 @@ installed out of band with nix :/
 
 * Org Mode
 #+begin_src emacs-lisp
-    (add-hook 'org-mode 'turn-on-auto-fill)
-    (org-clock-persistence-insinuate)
-    (define-key global-map "\C-cl" 'org-store-link)
-    (define-key global-map "\C-ca" 'org-agenda)
-    (define-key global-map "\C-cc" 'org-capture)
-    (setq org-log-done t
-          org-clock-persist 'historycc
-          org-directory "~/org/"
-          org-agenda-files (list "todo.org")
-          org-refile-targets '((nil . (:maxlevel 5)))
-          org-agenda-search-view-max-outline-level 3
-          org-capture-templates
-          '(("t" "Add Todo" entry (file+headline "todo.org" "Inbox")
-             "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
-            ("n" "Add Note" entry (file+headline "todo.org" "Inbox")
-             "** %?\n:PROPERTIES:\n:CATEGORY: Note\n:ENTERED: %u\n:END:\n"))
-          org-tags-exclude-from-inheritance (list "project")
-          org-todo-keywords '((sequence "TODO(t)"    ;; Later
-                                        "NEXT(n)"    ;; Now
-                                        "|"          ;;
-                                        "DONE(d!)"   ;; Completed
-                                        )
-                              (sequence "WAIT(w@/!)" ;; Waiting on someone else
-                                        "BLCK(b@/!)" ;; Blocked by something
-                                        "APPT"       ;; Is an Appointment
-                                        "FUTR"       ;; Maybe Someday
-                                        "|"          ;;
-                                        "CANC(c@)"   ;; Cancelled
-                                        "NOTE"       ;; Its a note
-                                        )))
+  (add-hook 'org-mode 'turn-on-auto-fill)
+  (add-hook 'org-mode 'org-indent-mode)
 
-    (require 'org-crypt)
-    (org-crypt-use-before-save-magic)
-    (setq org-tags-exclude-from-inheritance '("crypt"))
+  (org-clock-persistence-insinuate)
+  (define-key global-map "\C-cl" 'org-store-link)
+  (define-key global-map "\C-ca" 'org-agenda)
+  (define-key global-map "\C-cc" 'org-capture)
+  (setq org-log-done t
+        org-clock-persist 'historycc
+        org-directory "~/org/"
+        org-agenda-files (list "todo.org")
+        org-refile-targets '((nil . (:maxlevel 5)))
+        org-agenda-search-view-max-outline-level 3
+        org-capture-templates
+        '(("t" "Add Todo" entry (file+headline "todo.org" "Inbox")
+           "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
+          ("n" "Add Note" entry (file+headline "todo.org" "Inbox")
+           "** %?\n:PROPERTIES:\n:CATEGORY: Note\n:ENTERED: %u\n:END:\n"))
+        org-tags-exclude-from-inheritance (list "project")
+        org-todo-keywords '((sequence "TODO(t)"    ;; Later
+                                      "NEXT(n)"    ;; Now
+                                      "|"          ;;
+                                      "DONE(d!)"   ;; Completed
+                                      )
+                            (sequence "WAIT(w@/!)" ;; Waiting on someone else
+                                      "BLCK(b@/!)" ;; Blocked by something
+                                      "APPT"       ;; Is an Appointment
+                                      "FUTR"       ;; Maybe Someday
+                                      "|"          ;;
+                                      "CANC(c@)"   ;; Cancelled
+                                      "NOTE"       ;; Its a note
+                                      )))
 
-    (setq org-crypt-key nil)
-    (add-to-list 'display-buffer-alist `(,(rx bos "CAPTURE-" (* not-newline) eos)
-                                         (display-buffer-pop-up-frame)))
+  (require 'org-crypt)
+  (org-crypt-use-before-save-magic)
+  (setq org-tags-exclude-from-inheritance '("crypt"))
 
-    (defun cb/capture ()
-      (interactive)
-      (let* ((capture-frame (make-frame '((name . "*Float Capture*"))))
-             (display-buffer-alist `(("*Org Select*" (display-buffer-full-frame))
-                                     (,(rx bos "CAPTURE-") (display-buffer-full-frame))))
-             (org-capture-after-finalize-hook (list (lambda () (delete-frame capture-frame)))))
-        (select-frame-set-input-focus capture-frame)
-        (org-capture)))
+  (setq org-crypt-key nil)
+  (add-to-list 'display-buffer-alist `(,(rx bos "CAPTURE-" (* not-newline) eos)
+                                       (display-buffer-pop-up-frame)))
+
+  (defun cb/capture ()
+    (interactive)
+    (let* ((capture-frame (make-frame '((name . "*Float Capture*"))))
+           (display-buffer-alist `(("*Org Select*" (display-buffer-full-frame))
+                                   (,(rx bos "CAPTURE-") (display-buffer-full-frame))))
+           (org-capture-after-finalize-hook (list (lambda () (delete-frame capture-frame)))))
+      (select-frame-set-input-focus capture-frame)
+      (org-capture)))
 #+end_src

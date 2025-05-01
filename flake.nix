@@ -15,50 +15,25 @@
 
     home-manager.url = "github:nix-community/home-manager";
 
-    base16.url = "github:SenchoPens/base16.nix";
-
-    tinted-terminal = {
-      url = "github:tinted-theming/tinted-terminal";
-      flake = false;
-    };
-
-    tinted-waybar = {
-      url = "github:tinted-theming/base16-waybar";
-      flake = false;
-    };
-
-    tinted-emacs = {
-      url = "github:tinted-theming/base16-emacs";
-      flake = false;
-    };
-
-    base16-sway = {
-      url = "github:rkubosz/base16-sway";
-      flake = false;
-    };
-
     config-files = {
       url = "path:config/";
     };
   };
 
-  outputs = { home-manager, lix-module, nixpkgs, base16, ... } @ inputs: {
+  outputs = { home-manager, lix-module, nixpkgs, ... } @ inputs: rec {
     nixosConfigurations = {
           catbrick = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             modules = [
               lix-module.nixosModules.default
-              base16.nixosModule
-              { scheme = "${inputs.config-files}/theme.yaml"; }
-              ./themeing.nix
               ./system.nix
               home-manager.nixosModules.home-manager
               {
-                home-manager.backupFileExtension = "backup-";
+                home-manager.backupFileExtension = "backup1-";
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
                 home-manager.users = {
-                  catbrick = import ./users/catbrick.nix;
+                  catbrick = (import ./users/catbrick.nix) { inherit inputs; };
                 };
               }
             ];

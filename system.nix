@@ -3,33 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { config, pkgs, inputs, ... }:
 
-let
-  sway-conf = pkgs.writeText "sway-regreet-config" ''
-    exec "${config.programs.regreet.package}/bin/regreet; ${config.programs.sway.package}/bin/swaymsg exit"
-    include /etc/sway/config.d/*
-  '';
-
-  sway-launcher = pkgs.writeScript "sway-launcher.sh" ''
-    #!${pkgs.bash}/bin/bash
-
-    source /etc/profile
-
-    export MOZ_ENABLE_WAYLAND="1"
-    export QT_QPA_PLATFORM="wayland;xcb"
-    export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-    export GTK_USE_PORTAL=1
-    export NIXOS_XDG_OPEN_USE_PORTAL=1
-    # Fix for some Java AWT applications (e.g. Android Studio),
-    # use this if they aren't displayed properly:
-    export _JAVA_AWT_WM_NONREPARENTING=1
-    export XDG_CURRENT_DESKTOP=sway
-    export XDG_SESSION_DESKTOP=sway
-    export XDG_SESSION_TYPE=wayland
-    export GIO_EXTRA_MODULES=${pkgs.gvfs}/lib/gio/modules
-
-    exec ${pkgs.sway}/bin/sway --config ${sway-conf}
-  '';
-in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -114,11 +87,6 @@ in
   xdg.mime.enable = true;
   xdg.portal = {
     enable = true;
-    config = {
-      sway = {
-        "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
-      };
-    };
     wlr.enable = true;
     # gtk portal needed to make gtk apps happy
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
@@ -155,12 +123,7 @@ in
   environment.systemPackages = with pkgs; [
     vim
     wget
-    grim # screenshot functionality
-    slurp # screenshot functionality
-    wl-clipboard # wl-copy and wl-paste for copy/paste from stdin / stdout
-    mako # notification system developed by swaywm maintainer
-    rofi
-    waybar
+
     networkmanagerapplet
     wineWowPackages.stable
     winetricks
@@ -182,10 +145,7 @@ in
     gnupg.agent = {
       enable = true;
     };
-    sway = {
-      enable = true;
-      wrapperFeatures.gtk = true;
-    };
+    hyprland.enable = true;
     steam.enable = true;
   };
 
@@ -193,7 +153,6 @@ in
     enable = true;
     settings = {
       default_session = {
-        command = "${sway-launcher} --config ${sway-conf}";
         user = "greeter";
       };
     };
@@ -205,75 +164,6 @@ in
 
   networking.firewall.checkReversePath = false;
   
-  systemd = {
-    services = {
-      ### test script for services. Replace service with tested one
-      # sudo nixos-rebuild switch --flake ~/src/dotfiles/nixpkgs/. && sudo systemctl start nixos-flake-update.service
-      # systemctl status nixos-flake-update.service
-
-      "nixos-flake-update" = {
-        script = ''
-          cd /home/catbrick/src/dotfiles/nixpkgs/
-          PATH="${pkgs.git}/bin:$PATH" ${pkgs.lix}/bin/nix flake update
-        '';
-        serviceConfig = {
-          Type = "oneshot";
-          User = "root";
-        };
-      };
-      # TODO
-      # tons of boiler plate here, very easily fixed
-      "nixos-gc" = {
-        script = ''
-          ${pkgs.lix}/bin/nix-collect-garbage --delete-older-than 2d
-        '';
-        serviceConfig = {
-          Type = "oneshot";
-          User = "root";
-        };
-      };
-
-      "nixos-channel-update" = {
-        script = ''
-          ${pkgs.lix}/bin/nix-channel --update
-        '';
-        serviceConfig = {
-          Type = "oneshot";
-          User = "root";
-        };
-      };
-    };
-    timers = {
-      "nixos-update" = {
-        wantedBy = [ "timers.target" ];
-
-        timerConfig = {
-          OnCalendar = "weekly";
-          Persistent = "true";
-          Unit = "nixos-update.service";
-        };
-      };
-
-      "nixos-gc" = {
-        wantedBy = [ "timers.target" ];
-        timerConfig = {
-          OnCalendar = "weekly";
-          Persistent = "true";
-          Unit = "nixos-gc.service";
-        };
-      };
-
-      "nixos-channel-update" = {
-        wantedBy = [ "timers.target" ];
-        timerConfig = {
-          OnCalendar = "weekly";
-          Persistent = "true";
-          Unit = "nixos-channel-update.service";
-        };
-      };
-    };
-  };
-
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
