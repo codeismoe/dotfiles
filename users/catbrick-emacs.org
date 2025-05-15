@@ -1,14 +1,12 @@
 #+TITLE: Emacs Configuration
 #+PROPERTY: header-args:emacs-lisp :tangle config.el
 #+PROPERTY: header-args :mkdirp yes :comments no
-
-note: the tangle to config.el is a workaround for the community overlay
+*note* the tangle to config.el is a workaround for the nix emacs community overlay
 
 * Miscellanous Configuration
 ** Diminish Mode
 #+begin_src emacs-lisp
   (use-package diminish
-
     :config
     (require 'diminish))
 #+end_src
@@ -60,41 +58,15 @@ Keep a custom file for =customize= functionality, keep it out of init.el
 
 * Utilities
 #+begin_src emacs-lisp
-  (use-package ace-window
-
-    :bind ("M-o" . ace-window))
-
-  (use-package projectile
-
-    :bind-keymap ("C-c p" . projectile-command-map)
-    :config
-    (projectile-mode 1))
-
   (use-package which-key
-
     :diminish which-key-mode
     :config
     (which-key-mode 1))
 
   (use-package direnv
-
     :config (direnv-mode))
 
-  (use-package perspective
-
-    :bind ("C-x C-b" . persp-list-buffers)
-    :custom (persp-mode-prefix-key (kbd "C-x x"))
-    :init (persp-mode 0))
-
-  (use-package avy
-
-    :bind (("C-;" . avy-goto-char-1)
-           ("C-:" . avy-goto-char-2)
-           ("C-'" . avy-goto-char-timer))
-    :config (require 'avy))
-
   (use-package undo-tree
-
     :diminish undo-tree-mode
     :config
     (let ((save-dir (concat user-emacs-directory "undotree/")))
@@ -104,7 +76,6 @@ Keep a custom file for =customize= functionality, keep it out of init.el
     (global-undo-tree-mode 1))
 
   (use-package frames-only-mode
-
     :custom
     ((frames-only-mode-kill-frame-when-buffer-killed-buffer-list
       `("*RefTeX Select*" "*Help*" "*Popup Help*" "*Completions*" (regexp . ,(rx bos "CAPTURE-"))))
@@ -112,6 +83,40 @@ Keep a custom file for =customize= functionality, keep it out of init.el
       (list #'calendar #'report-emacs-bug 'checkdoc-show-diagnostics 'checkdoc 'org-compile-file 'corfu-popupinfo--show 'org-capture 'org-insert-link)))
     :init
     (frames-only-mode t))
+
+  (use-package shackle
+    :diminish t
+    :custom
+      (shackle-rules '((compilation-mode :custom rk/open-compilation-buffer :select t)
+  		   ("\\*Apropos\\|Help\\|Occur\\|tide-references\\*" :regexp t :same t :select t :inhibit-window-quit t)
+  		   ("\\*magit" :regexp t :same t :select t)
+  		   ("\\*shell.*" :regexp t :same t :select t)
+  		   ("\\*PowerShell.*" :regexp t :same t :select t)
+  		   ("\\*Cargo.*" :regexp t :other t :select nil)
+  		   ("*Messages*" :select nil :other t)
+  		   ("*go-guru-output*" :select t :same t)
+  		   ("*Proced*" :select t :same t)
+  		   ("*Buffer List*" :select t :same t)
+  		   ("\\*Pp Eval" :regexp t :same nil :select t :other t)
+  		   ("*Messages*" :same nil :other t :select t :inhibit-window-quit t)
+
+  		   ;; slime
+  		   ("*slime-source*" :select nil :same nil :other t)
+  		   ("*slime-description*" :select nil :other t :inhibit-window-quit t)
+  		   ("\\*slime-repl" :regexp t :same nil :select nil :other t)
+  		   ;; ("\\*sldb" :regexp t :other t :inhibit-window-quit t :select t)
+  		   ("\\*slime-compilation" :regexp t :same nil :select nil :other t)
+  		   ("*slime-scratch*" :same nil :select t :other t)
+
+  		   ;; ert
+  		   ("*ert*" :select nil :same nil :other t)
+
+  		   ;; clojure
+  		   ("*sesman CIDER browser*" :inhibit-window-quit t :select t :same t)
+  		   ("\\*cider-repl" :regexp t :same nil :other t)))
+      (shackle-default-rule nil)
+      :config
+      (shackle-mode 1))
 #+end_src
 
 * Aesthetics
@@ -175,16 +180,13 @@ bottom of the screen
 * Programming
 ** Utilities
 #+begin_src emacs-lisp
-  (use-package magit
-    )
+  (use-package magit)
 
   (use-package company
-
     :diminish company-mode
     :hook ((after-init . global-company-mode)))
 
   (use-package flycheck
-
     :diminish flycheck-mode
     :config
     (global-flycheck-mode 1))
@@ -195,6 +197,7 @@ bottom of the screen
     (yas-global-mode 1))
 
   (use-package yasnippet-snippets)
+  (use-package rg)
 #+end_src
 
 *** Tree sit
@@ -229,7 +232,6 @@ bottom of the screen
 ** LSP
 #+begin_src emacs-lisp
   (use-package lsp-mode
-
     :init
     (setq lsp-keymap-prefix "C-c l")
     (setq lsp-modeline-diagnostics-scope :workspace)
@@ -238,35 +240,25 @@ bottom of the screen
     :commands lsp)
 
   (use-package lsp-ui
-
     :commands lsp-ui-mode)
 
   (use-package helm-lsp
-
-    :commands hlm-lsp-workspace-symbol)
+    :commands helm-lsp-workspace-symbol)
 
   (use-package dap-mode
-
     :after lsp-mode
     :config (dap-auto-configure-mode))
 #+end_src
 
 ** Languages
-*** Ledger
-#+begin_src emacs-lisp
-  (use-package ledger-mode
-    )
-#+end_src
 *** Dockerfile
 #+begin_src emacs-lisp
-  (use-package dockerfile-mode
-    )
+  (use-package dockerfile-mode)
 #+end_src
 
 *** Rust
 #+begin_src emacs-lisp
   (use-package rust-mode
-
     :hook (rust-mode . lsp)
     :config
     (setq lsp-rust-server 'rust-analyzer))
@@ -274,8 +266,7 @@ bottom of the screen
 
 *** Nix
 #+begin_src emacs-lisp
-  (use-package nix-mode
-    )
+  (use-package nix-mode)
 #+end_src
 
 *** Javascript
@@ -287,8 +278,7 @@ bottom of the screen
 
 *** Typescript
 #+begin_src emacs-lisp
-  (use-package typescript-mode
-    )
+  (use-package typescript-mode)
 
   (defun setup-tide-fn ()
     (interactive)
@@ -299,29 +289,24 @@ bottom of the screen
     (company-mode +1))
 
   (use-package tide
-
     :hook (typescript-mode . #'setup-tide-fn))
 #+end_src
 
 *** Haskell
 #+begin_src emacs-lisp
-  (use-package lsp-haskell
-    )
+  (use-package lsp-haskell)
   (use-package haskell-mode
-
     :hook (haskell-mode . lsp))
 #+end_src
 
 *** Elixir
 #+begin_src emacs-lisp
-  (use-package elixir-ts-mode
-    :ensure t)
+  (use-package elixir-ts-mode)
 #+end_src
 
 *** Yaml
 #+begin_src emacs-lisp
-  (use-package yaml-mode
-    )
+  (use-package yaml-mode)
 #+end_src
 
 * mu
@@ -414,27 +399,30 @@ bottom of the screen
      '("'" . repeat)
      '("<escape>" . ignore)))
 
+  (use-package meow-tree-sitter)
   (use-package meow
-
     :config
     (require 'meow)
     (meow-setup)
-    (meow-global-mode 1))
+    (meow-global-mode 1)
+    (meow-tree-sitter-register-defaults))
 #+end_src
-
+ 
 * Org Mode
 #+begin_src emacs-lisp
-  (add-hook 'org-mode 'turn-on-auto-fill)
-  (add-hook 'org-mode 'org-indent-mode)
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+  (add-hook 'org-mode-hook 'org-indent-mode)
 
   (org-clock-persistence-insinuate)
+
   (define-key global-map "\C-cl" 'org-store-link)
   (define-key global-map "\C-ca" 'org-agenda)
   (define-key global-map "\C-cc" 'org-capture)
+
   (setq org-log-done t
         org-clock-persist 'historycc
         org-directory "~/org/"
-        org-agenda-files (list "todo.org")
+        org-agenda-files (list "todo.org" "2025.org")
         org-refile-targets '((nil . (:maxlevel 5)))
         org-agenda-search-view-max-outline-level 3
         org-capture-templates
@@ -460,17 +448,8 @@ bottom of the screen
   (require 'org-crypt)
   (org-crypt-use-before-save-magic)
   (setq org-tags-exclude-from-inheritance '("crypt"))
-
   (setq org-crypt-key nil)
-  (add-to-list 'display-buffer-alist `(,(rx bos "CAPTURE-" (* not-newline) eos)
-                                       (display-buffer-pop-up-frame)))
 
-  (defun cb/capture ()
-    (interactive)
-    (let* ((capture-frame (make-frame '((name . "*Float Capture*"))))
-           (display-buffer-alist `(("*Org Select*" (display-buffer-full-frame))
-                                   (,(rx bos "CAPTURE-") (display-buffer-full-frame))))
-           (org-capture-after-finalize-hook (list (lambda () (delete-frame capture-frame)))))
-      (select-frame-set-input-focus capture-frame)
-      (org-capture)))
+  ;; (add-to-list 'display-buffer-alist `(,(rx bos "CAPTURE-" (* not-newline) eos)
+  ;;                                      (display-buffer-pop-up-frame)))
 #+end_src

@@ -15,25 +15,33 @@
 
     home-manager.url = "github:nix-community/home-manager";
 
-    config-files = {
-      url = "path:config/";
+    localbin = {
+      url = "path:./bin/";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+    
   };
 
-  outputs = { home-manager, lix-module, nixpkgs, ... } @ inputs: rec {
+  outputs = { home-manager, lix-module, localbin, nixpkgs, ... } @ inputs: rec {
     nixosConfigurations = {
-          catbrick = nixpkgs.lib.nixosSystem {
+          catbrick = nixpkgs.lib.nixosSystem rec {
             system = "x86_64-linux";
             modules = [
               lix-module.nixosModules.default
-              ./system.nix
+              ./system.nix 
               home-manager.nixosModules.home-manager
               {
                 home-manager.backupFileExtension = "backup1-";
                 home-manager.useGlobalPkgs = true;
                 home-manager.useUserPackages = true;
-                home-manager.users = {
-                  catbrick = (import ./users/catbrick.nix) { inherit inputs; };
+                home-manager.users =
+                  let
+                    config = import ./config/default.nix { pkgs = import nixpkgs { inherit system; }; };
+                  in {
+                  catbrick = import ./users/catbrick.nix {
+                    inherit inputs;
+                    waybar-config = config.waybar-config;
+                  };
                 };
               }
             ];

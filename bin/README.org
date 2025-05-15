@@ -1,0 +1,6 @@
+#+TITLE: scripts I use
+
+These are installed system wide because... i am... lazy :3
+
+- special workspaces in =movespec.sh= and =togglespec.sh= are named
+  special:ws[1-9] due to waybar getting confused with special:[1-9]

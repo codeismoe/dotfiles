@@ -20,6 +20,10 @@
       "waybar &"
     ];
 
+    input = {
+      kb_options = "ctrl:nocaps";
+    };
+    
     monitor = ",preferred,auto,1";
     general = {
       gaps_in = 1;
@@ -33,16 +37,27 @@
     };
 
     group =  {
-     "col.border_active" = "rgba(dc8a78ff) rgba(8839efff) 45deg";
-     "col.border_inactive" = "rgba(7287fdcc) rgba(179299cc) 45deg";
-     "col.border_locked_active" = "rgba(dc8a78ff) rgba(8839efff) 45deg";
-     "col.border_locked_inactive" = "rgba(7287fdcc) rgba(179299cc) 45deg";
+      "col.border_active" = "rgba(dc8a78ff) rgba(8839efff) 45deg";
+      "col.border_inactive" = "rgba(7287fdcc) rgba(179299cc) 45deg";
+      "col.border_locked_active" = "rgba(dc8a78ff) rgba(8839efff) 45deg";
+      "col.border_locked_inactive" = "rgba(7287fdcc) rgba(179299cc) 45deg";
+      groupbar = {
+        enabled = true;
+        gradients = 1;
+        render_titles = 1;
+        "col.active" = "rgba(8839efff)";
+        "col.inactive" = "rgba(179299cc)";
+        "col.locked_active" = "rgba(dc8a78ff)";
+        "col.locked_inactive" = "rgba(7287fdcc)";
+      };
     };
-
+        
     decoration = {
       rounding = 0;
       shadow.enabled = false;
-      blur.enabled = true;
+      blur = {
+        enabled = false;
+      };
     };
 
     layerrule = "blur,waybar";
@@ -84,7 +99,11 @@
         "$mod SHIFT, Q, killactive"
         "$mod CTRL, Q, exit"
         "$mod, F, fullscreen"
-        "$mod, space, togglefloating"
+        "$mod SHIFT, F, togglefloating"
+        "$mod, C, exec, togglespec.sh"
+        "$mod SHIFT, C, exec, movespec.sh"
+        "$mod, space, togglespecialworkspace"
+        "$mod SHIFT, space, movetoworkspace, special"
         # "$mod, S, togglesplit"
         
         "$mod, G, togglegroup"
@@ -132,6 +151,14 @@
       ",XF86MonBrightnessDown, exec, brightnessctl s 10%-"
     ];
 
+    bindit = [
+      "$mod, SUPER_L, exec, pkill -SIGUSR1 waybar"
+    ];
+    
+    binditr = [
+      ", SUPER_L, exec, pkill -SIGUSR1 waybar"
+    ];
+
     bindm = [
       "$mod, mouse:272, movewindow"
       "$mod, mouse:272, togglefloating"
@@ -139,15 +166,7 @@
     ];
 
     workspace = [
-      # "w[tv1], gapsout:0, gapsin:0"
-      # "f[1], gapsout:0, gapsin:0"
-      
-    ];
-    windowrule = [
-    #   "bordersize 0, floating:0, onworkspace:w[tv1]"
-    #   "rounding 0, floating:0, onworkspace:w[tv1]"
-    #   "bordersize 0, floating:0, onworkspace:f[1]"
-    #   "rounding 0, floating:0, onworkspace:f[1]"
+      "s[true], gapsout:25"
     ];
   };
 

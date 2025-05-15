@@ -1,4 +1,4 @@
-{ inputs }:
+{ inputs, waybar-config }:
 
 { config, pkgs, ... }:
 
@@ -11,67 +11,73 @@
 
     packages =  with pkgs; [
       any-nix-shell
+
+      # dev toops
+      automake
+      cabal-install
+      clang
+      clang-tools
+      docker-compose
+      elixir
+      elixir-ls
+      ghc
+      glib
+      gnumake
+      haskell-language-server
+      kind
+      kubectl
+      meson
+      nodejs
+      openjdk
+      python3
+      rustup
+      
+      # cli
       aspell
       aspellDicts.en
       aspellDicts.en-computers
-      automake
-      blueman
-      brightnessctl
-      cabal-install
-      cinny-desktop
-      clang
-      clang-tools
       curl
-      deluge
-      discord
-      nwg-look
-      qt6ct
-      libsForQt5.qt5ct
-      vesktop
-      docker-compose
       file
-      firefox
-      ghc
-      ghostscript
-      glib
-      gnumake
-      gnupg
-      google-chrome
-      haskell-language-server
       htop
-      torzu
-      wdisplays
-      dolphin-emu
       ispell
       jq
-      ledger
-      meson
-      mpv
       mu
       neofetch
-      nethack
-      nodejs
-      openjdk
       pass
-      pavucontrol
-      python3
-      qemu
-      qutebrowser
       ripgrep
-      ripgrep
-      roboto
-      rustup
-      silver-searcher
       texliveFull
       unzip
-      vintagestory
-      elixir
-      elixir-ls
-      tela-icon-theme
+
+      # aesthetics
       catppuccin
+      catppuccin-cursors
       catppuccin-gtk
       catppuccin-qt5ct
-      catppuccin-cursors
+      roboto
+      tela-icon-theme
+
+      # applications
+      deluge
+      dolphin-emu
+      firefox
+      gimp
+      google-chrome
+      krita
+      mpv
+      pavucontrol
+      qemu
+      quickemu
+      vesktop
+      wdisplays
+
+      # support
+      blueman
+      brightnessctl
+      ghostscript
+      gnupg
+
+      # gaymes
+      nethack
     ];
   };
   
@@ -118,8 +124,8 @@
 
     waybar =
       let
-        waybar-file = builtins.readFile "${inputs.config-files.packages.x86_64-linux.default.waybar-config.outPath}/waybar.json";
-        styles = builtins.readFile "${inputs.config-files.packages.x86_64-linux.default.waybar-config.outPath}/waybar.css";
+        waybar-file = builtins.readFile "${waybar-config.outPath}/waybar.json";
+        styles = builtins.readFile "${waybar-config.outPath}/waybar.css";
       in {
         enable = true;
         style = ''
@@ -131,7 +137,7 @@
     emacs = {
       enable = true;
       package = pkgs.emacsWithPackagesFromUsePackage {
-        package = pkgs.emacs-git-pgtk;
+        package = pkgs.emacs-unstable-pgtk;
         config = ./catbrick-emacs.org;
         defaultInitFile = true;
         alwaysEnsure = true;
@@ -168,6 +174,7 @@
 
     lorri.enable = true;
     emacs.enable = true;
+
     mbsync = {
       enable = true;
       configFile = ./mbsync;

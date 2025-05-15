@@ -5,7 +5,7 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
     ];
 
@@ -13,13 +13,17 @@
   nixpkgs.config.permittedInsecurePackages = [
     "dotnet-runtime-7.0.20" # vintage story
   ];
-  nixpkgs.overlays = [inputs.emacs-overlay.overlay];
+  nixpkgs.overlays = let
+    local = (final: prev: { localbin = inputs.localbin.defaultPackage; });
+  in [inputs.emacs-overlay.overlay local];
+  
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-
-  nix.settings.experimental-features = [ "nix-command flakes" ];
+  nix = {
+    settings.experimental-features = [ "nix-command flakes" ];
+  };
 
   hardware.graphics = {
     enable = true;
@@ -131,6 +135,8 @@
     git
     wireguard-ui
     wireguard-tools
+    # TODO bruh this shit fugged up no cap
+    localbin.x86_64-linux
   ];
 
   # Enable the gnome-keyring secrets vault.
