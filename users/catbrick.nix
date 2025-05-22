@@ -67,7 +67,7 @@
       pavucontrol
       qemu
       quickemu
-      vesktop
+      discord
       wdisplays
 
       # support
@@ -75,7 +75,7 @@
       brightnessctl
       ghostscript
       gnupg
-
+      
       # gaymes
       nethack
     ];
@@ -172,6 +172,14 @@
       };
     };
 
+    hyprpolkitagent.enable = true;
+
+    udiskie = {
+      enable = true;
+      automount = true;
+      tray = "auto";
+    };
+    
     lorri.enable = true;
     emacs.enable = true;
 

@@ -1,7 +1,8 @@
 #+TITLE: Emacs Configuration
 #+PROPERTY: header-args:emacs-lisp :tangle config.el
 #+PROPERTY: header-args :mkdirp yes :comments no
-*note* the tangle to config.el is a workaround for the nix emacs community overlay
+# NOTE the tangle to config.el is a workaround for the nix emacs community overlay
+
 
 * Miscellanous Configuration
 ** Diminish Mode
@@ -48,6 +49,14 @@ Keep a custom file for =customize= functionality, keep it out of init.el
   ;; (customize-set-variable 'even-window-sizes nil)
 #+end_src
 
+** initial buffer choice
+Using frames only mode, if I create a new frame I want it to
+essentially copy the creation of a new window: visiting the currently
+selected window's buffer. So just duplicate this behavior
+
+#+begin_src emacs-lisp
+  (setq initial-buffer-choice #'(lambda () (window-buffer)))
+#+end_src
 ** Spelling, bell, exec-path, indent, =yes-or-no-p=, etc
 #+begin_src emacs-lisp
   (setq ispell-program-name "aspell")
@@ -87,38 +96,18 @@ Keep a custom file for =customize= functionality, keep it out of init.el
   (use-package shackle
     :diminish t
     :custom
-      (shackle-rules '((compilation-mode :custom rk/open-compilation-buffer :select t)
-  		   ("\\*Apropos\\|Help\\|Occur\\|tide-references\\*" :regexp t :same t :select t :inhibit-window-quit t)
+      (shackle-rules '(("\\*Apropos\\|Help\\|Occur\\|tide-references\\*" :regexp t :same t :select t :inhibit-window-quit t)
   		   ("\\*magit" :regexp t :same t :select t)
   		   ("\\*shell.*" :regexp t :same t :select t)
-  		   ("\\*PowerShell.*" :regexp t :same t :select t)
   		   ("\\*Cargo.*" :regexp t :other t :select nil)
   		   ("*Messages*" :select nil :other t)
-  		   ("*go-guru-output*" :select t :same t)
   		   ("*Proced*" :select t :same t)
   		   ("*Buffer List*" :select t :same t)
-  		   ("\\*Pp Eval" :regexp t :same nil :select t :other t)
-  		   ("*Messages*" :same nil :other t :select t :inhibit-window-quit t)
-
-  		   ;; slime
-  		   ("*slime-source*" :select nil :same nil :other t)
-  		   ("*slime-description*" :select nil :other t :inhibit-window-quit t)
-  		   ("\\*slime-repl" :regexp t :same nil :select nil :other t)
-  		   ;; ("\\*sldb" :regexp t :other t :inhibit-window-quit t :select t)
-  		   ("\\*slime-compilation" :regexp t :same nil :select nil :other t)
-  		   ("*slime-scratch*" :same nil :select t :other t)
-
-  		   ;; ert
-  		   ("*ert*" :select nil :same nil :other t)
-
-  		   ;; clojure
-  		   ("*sesman CIDER browser*" :inhibit-window-quit t :select t :same t)
-  		   ("\\*cider-repl" :regexp t :same nil :other t)))
+  		   ("*Messages*" :same nil :other t :select t :inhibit-window-quit t)))
       (shackle-default-rule nil)
-      :config
-      (shackle-mode 1))
+    :config
+    (shackle-mode 1))
 #+end_src
-
 * Aesthetics
 #+begin_src emacs-lisp
   (use-package catppuccin-theme
@@ -133,71 +122,48 @@ Keep a custom file for =customize= functionality, keep it out of init.el
   (set-frame-font "Iosevka Nerd Font 12" nil t)
 #+end_src
 
-* Helm
-The decision over helm vs ivy is something I need to figure out,
-currently I'm using Helm.
-
-The ~display-buffer-alist~ configuration makes helm appear at the
-bottom of the screen
+* Ivy
 #+begin_src emacs-lisp
-  (use-package helm
-
-    :diminish helm-mode
-    :bind (("M-x" . helm-M-x)
-           ("C-x C-f" . helm-find-files))
+  (use-package ivy
+    :diminish t
     :config
-    (helm-mode 1)
-    ;; (add-to-list 'display-buffer-alist
-    ;;              `(,(rx bos "*helm" (* not-newline) "*" eos)
-    ;;                (display-buffer-in-side-window)
-    ;;                (inhibit-same-window . t)
-    ;;                (window-height . 0.3)))
-    )
+    (setopt ivy-use-virtual-buffers t)
+    (setopt enable-recursive-minibuffers t)
+    (ivy-mode 1))
 
-  (use-package helm-swoop
-
-    :bind (("M-i" . helm-swoop)
-           ("M-I" . helm-swoop-back-to-last-point)
-           ("C-c M-i" . helm-multi-swoop)
-           ("C-x M-i" . helm-multi-swoop-all)
-           :map isearch-mode-map
-           ("M-i" . helm-swoop-from-isearch)
-           :map helm-swoop-map
-           ("M-i" . helm-multi-swoop-all-from-helm-swoop)
-           ("M-m" . helm-multi-swoop-current-mode-from-helm-swoop)
-           ("C-r" . helm-previous-line)
-           ("C-s" . helm-next-line)
-           :map helm-multi-swoop-map
-           ("C-r" . helm-previous-line)
-           ("C-s" . helm-next-line))
+  (use-package counsel
+    :diminish t
     :config
-    (setq helm-multi-swoop-edit-save t))
+    (counsel-mode 1))
 
-  (use-package helm-ag
-    )
+  (use-package swiper
+    :bind ("C-s" . swiper))
 #+end_src
 
 * Programming
 ** Utilities
 #+begin_src emacs-lisp
-  (use-package magit)
+    (use-package magit)
 
-  (use-package company
-    :diminish company-mode
-    :hook ((after-init . global-company-mode)))
+    (use-package company
+      :diminish company-mode
+      :hook ((after-init . global-company-mode)))
 
-  (use-package flycheck
-    :diminish flycheck-mode
-    :config
-    (global-flycheck-mode 1))
+    (use-package flycheck
+      :diminish flycheck-mode
+      :config
+      (global-flycheck-mode 1))
 
-  (use-package yasnippet
-    :diminish yas-minor-mode
-    :config
-    (yas-global-mode 1))
+    (use-package yasnippet
+      :diminish yas-minor-mode
+      :config
+      (yas-global-mode 1))
 
-  (use-package yasnippet-snippets)
-  (use-package rg)
+    (use-package yasnippet-snippets)
+    (use-package rg)
+
+    (use-package project
+      :custom (project-mode-line t))
 #+end_src
 
 *** Tree sit

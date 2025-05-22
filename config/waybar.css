@@ -11,7 +11,6 @@
 
 * {
     border: none;
-    border-radius: 9px;
     font-family: "Iosevka Nerd Font";
     font-weight: bold;
     font-size: 14px;
@@ -19,7 +18,7 @@
 }
 
 window#waybar {
-    background: @bar-bg;
+    background: @main-bg;
 }
 
 tooltip {
@@ -69,7 +68,6 @@ tooltip {
     padding-right: 3px;
     margin-right: 0px;
     color: @wb-color;
-    animation: tb_normal 20s ease-in-out 1;
 }
 
 #taskbar button.active {
@@ -79,15 +77,11 @@ tooltip {
     padding-left: 12px;
     padding-right: 12px;
     margin-right: 3px;
-    animation: tb_active 20s ease-in-out 1;
-    transition: all 0.4s cubic-bezier(.55, -0.68, .48, 1.682);
 }
 
 #taskbar button:hover {
     background: @wb-hvr-bg;
     color: @wb-hvr-color;
-    animation: tb_hover 20s ease-in-out 1;
-    transition: all 0.3s cubic-bezier(.55, -0.68, .48, 1.682);
 }
 
 #tray menu * {

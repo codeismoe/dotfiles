@@ -23,7 +23,7 @@
     input = {
       kb_options = "ctrl:nocaps";
     };
-    
+
     monitor = ",preferred,auto,1";
     general = {
       gaps_in = 1;
@@ -51,7 +51,7 @@
         "col.locked_inactive" = "rgba(7287fdcc)";
       };
     };
-        
+
     decoration = {
       rounding = 0;
       shadow.enabled = false;
@@ -72,10 +72,10 @@
     dwindle = {
       pseudotile = false;
       preserve_split = true;
-      
+
       smart_split = false;
       smart_resizing = false;
-      
+
       default_split_ratio = 1.1;
     };
 
@@ -85,7 +85,7 @@
       mfact = "0.55";
       orientation = "left";
       slave_count_for_center_master = "2";
-      center_master_slaves_on_right = true;
+      center_master_fallback = "right";
     };
 
     bind =
@@ -93,7 +93,7 @@
         "$mod, E, exec, emacsclient -c"
         "$mod SHIFT, E, exec, emacsclient -ce '(eshell \"new\")'"
         "$mod, return, exec, kitty"
-        "$mod, W, exec, rofi -show drun"
+        "$mod, W, exec, rofi -show combi -combi-modes 'drun,window' -modes combi"
         "$mod SHIFT, W, exec, rofi-pass"
 
         "$mod SHIFT, Q, killactive"
@@ -105,7 +105,7 @@
         "$mod, space, togglespecialworkspace"
         "$mod SHIFT, space, movetoworkspace, special"
         # "$mod, S, togglesplit"
-        
+
         "$mod, G, togglegroup"
         "$mod, A, changegroupactive, b"
         "$mod, D, changegroupactive, f"
@@ -120,7 +120,7 @@
 
         "$mod, comma, layoutmsg, addmaster"
         "$mod, period, layoutmsg, removemaster"
-        
+
         "$mod, H, movefocus, l"
         "$mod, L, movefocus, r"
         "$mod, K, movefocus, u"
@@ -154,7 +154,7 @@
     bindit = [
       "$mod, SUPER_L, exec, pkill -SIGUSR1 waybar"
     ];
-    
+
     binditr = [
       ", SUPER_L, exec, pkill -SIGUSR1 waybar"
     ];
