@@ -9,10 +9,11 @@
       ./hardware-configuration.nix
     ];
 
-  # used for vintage story lol
-  nixpkgs.config.permittedInsecurePackages = [
-    "dotnet-runtime-7.0.20" # vintage story
-  ];
+  # # used for vintage story lol
+  # nixpkgs.config.permittedInsecurePackages = [
+  #   "dotnet-runtime-7.0.20" # vintage story
+  # ];
+
   nixpkgs.overlays = let
     local = (final: prev: { localbin = inputs.localbin.defaultPackage; });
   in [inputs.emacs-overlay.overlay local];

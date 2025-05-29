@@ -81,7 +81,7 @@
 
     # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
     master = {
-      new_status = "inherit";
+      new_status = "slave";
       mfact = "0.55";
       orientation = "left";
       slave_count_for_center_master = "2";

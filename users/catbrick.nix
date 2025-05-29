@@ -1,5 +1,4 @@
-{ inputs, waybar-config }:
-
+{ inputs }:
 { config, pkgs, ... }:
 
 {
@@ -124,14 +123,12 @@
 
     waybar =
       let
-        waybar-file = builtins.readFile "${waybar-config.outPath}/waybar.json";
-        styles = builtins.readFile "${waybar-config.outPath}/waybar.css";
+        waybar-settings = builtins.fromJSON (builtins.readFile "${inputs.waybarConfig.defaultPackage.x86_64-linux}/waybar.json");
+        waybar-style = builtins.readFile "${inputs.waybarConfig.defaultPackage.x86_64-linux}/waybar.css";
       in {
         enable = true;
-        style = ''
-          ${styles}
-        '';
-        settings = [(builtins.fromJSON waybar-file)];
+        style = waybar-style;
+        settings = [ waybar-settings ];
       };
 
     emacs = {
