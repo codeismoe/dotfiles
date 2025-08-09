@@ -1,7 +1,7 @@
-{pkgs, packageName, ...}:
+{pkgs, ...}:
 
 pkgs.stdenv.mkDerivation {
-  name = packageName;
+  name = "waybar-config";
   src = ./.;
   phases = [ "installPhase" ];
   installPhase = ''

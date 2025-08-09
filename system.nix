@@ -4,21 +4,15 @@
 { config, pkgs, inputs, ... }:
 
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
-  # # used for vintage story lol
-  # nixpkgs.config.permittedInsecurePackages = [
-  #   "dotnet-runtime-7.0.20" # vintage story
-  # ];
-
-  nixpkgs.overlays = let
-    local = (final: prev: { localbin = inputs.localbin.defaultPackage; });
-  in [inputs.emacs-overlay.overlay local];
+  nixpkgs.overlays = [
+    inputs.emacs-overlay.overlay
+    inputs.niri.overlays.niri
+  ]; 
   
-  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -64,6 +58,8 @@
     variant = "";
   };
 
+  services.blueman.enable = true;
+  
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -74,6 +70,7 @@
     pulse.enable = true;
   };
 
+  fonts.fontDir.enable = true;
   fonts.packages = (with pkgs; [
     nerd-fonts.iosevka
     nerd-fonts.fira-code
@@ -83,22 +80,42 @@
     iosevka
     fira-code
     fira-code-symbols
+    _3270font
+    ibm-plex
   ]);
 
   services.dbus.enable = true;
-  services.desktopManager.plasma6.enable = true;
+
+  environment.gnome.excludePackages = (with pkgs; [
+    gnome-photos
+    gnome-tour
+    cheese
+    gnome-music
+    gedit # text editor
+    epiphany # web browser
+    geary # email reader
+    gnome-characters
+    tali # poker game
+    iagno # go game
+    hitori # sudoku game
+    atomix # puzzle game
+    yelp # Help view
+    gnome-contacts
+    gnome-initial-setup
+  ]);
+            
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
+  programs.dconf.enable = true;
 
   xdg.icons.enable = true;
   xdg.mime.enable = true;
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    # gtk portal needed to make gtk apps happy
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-
+    # extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.groups = {
     catbrick = {};
   };
@@ -130,38 +147,29 @@
     wget
 
     networkmanagerapplet
-    wineWowPackages.stable
-    winetricks
-    wineWowPackages.waylandFull
     git
     wireguard-ui
     wireguard-tools
-    # TODO bruh this shit fugged up no cap
-    localbin.x86_64-linux
+
+    wineWowPackages.waylandFull
   ];
 
   # Enable the gnome-keyring secrets vault.
   # Will be exposed through DBus to programs willing to store secrets.
   services.gnome.gnome-keyring.enable = true;
+  services.openssh.enable = true;
 
   programs = {
     nix-ld.enable = true;
-    regreet.enable = true;
     fish.enable = true;
-    dconf.enable = true;
     gnupg.agent = {
       enable = true;
     };
-    hyprland.enable = true;
     steam.enable = true;
-  };
-
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        user = "greeter";
-      };
+    hamster.enable = true;
+    niri = {
+      enable = true;
+      package = pkgs.niri-unstable;
     };
   };
 
@@ -170,6 +178,31 @@
   programs.virt-manager.enable = true;
 
   networking.firewall.checkReversePath = false;
+
+  stylix = {
+    enable = true;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-frappe.yaml";
+    image = ./bg-3.jpg;
+    polarity = "dark";
+    
+    fonts.monospace.package = pkgs.nerd-fonts.fira-code;
+    fonts.monospace.name = "FiraCode Nerd Font";
+
+    fonts.sansSerif.package = pkgs.nerd-fonts.ubuntu;
+    fonts.sansSerif.name = "Ubuntu Nerd Font";
+
+    # serifs are yucky
+    fonts.serif = config.stylix.fonts.sansSerif;
+
+    fonts.sizes.applications = 10;
+    fonts.sizes.desktop = 12;
+
+    cursor.package = pkgs.phinger-cursors;
+    cursor.name = "phinger-cursors-dark";
+    cursor.size = 12;
+  };
+
+
   
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

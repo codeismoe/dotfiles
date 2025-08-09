@@ -3,48 +3,31 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    emacs-overlay = {
-      url = "github:nix-community/emacs-overlay/";
-    };
-
-    lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-2.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
+    emacs-overlay.url = "github:nix-community/emacs-overlay/";
     home-manager.url = "github:nix-community/home-manager";
-
-    localbin = {
-      url = "path:./bin/";
+    niri.url = "github:sodiboo/niri-flake";
+    stylix = {
+      url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    waybarConfig = {
-      url = "path:./waybar-config/";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
   };
 
-  outputs = { home-manager, lix-module, localbin, nixpkgs, ... } @ inputs: {
+  outputs = { home-manager, nixpkgs, niri, stylix, ... } @ inputs: {
     nixosConfigurations = {
       catbrick = nixpkgs.lib.nixosSystem rec {
         system = "x86_64-linux";
         modules = [
-          lix-module.nixosModules.default
+          stylix.nixosModules.stylix
           ./system.nix
+          niri.nixosModules.niri
           home-manager.nixosModules.home-manager
           {
-            home-manager.backupFileExtension = "backup1-";
+            home-manager.backupFileExtension = "backup-";
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users =
-              let
-                config = import ./config/default.nix { pkgs = import nixpkgs { inherit system; }; };
-              in {
-                catbrick = import ./users/catbrick.nix { inherit inputs; };
-              };
+            home-manager.users = {
+              catbrick = import ./users/catbrick.nix { inherit inputs; };
+            };
           }
         ];
         specialArgs = {

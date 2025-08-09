@@ -143,27 +143,29 @@ selected window's buffer. So just duplicate this behavior
 * Programming
 ** Utilities
 #+begin_src emacs-lisp
-    (use-package magit)
+  (use-package magit)
 
-    (use-package company
-      :diminish company-mode
-      :hook ((after-init . global-company-mode)))
+  (use-package company
+    :diminish company-mode
+    :hook ((after-init . global-company-mode)))
 
-    (use-package flycheck
-      :diminish flycheck-mode
-      :config
-      (global-flycheck-mode 1))
+  (use-package flycheck
+    :diminish flycheck-mode
+    :config
+    (global-flycheck-mode 1))
 
-    (use-package yasnippet
-      :diminish yas-minor-mode
-      :config
-      (yas-global-mode 1))
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :config
+    (yas-global-mode 1))
 
-    (use-package yasnippet-snippets)
-    (use-package rg)
+  (use-package yasnippet-snippets)
+  (use-package rg)
 
-    (use-package project
-      :custom (project-mode-line t))
+  (use-package project
+    :custom (project-mode-line t))
+
+  (editorconfig-mode 1)
 #+end_src
 
 *** Tree sit
@@ -208,12 +210,20 @@ selected window's buffer. So just duplicate this behavior
   (use-package lsp-ui
     :commands lsp-ui-mode)
 
-  (use-package helm-lsp
-    :commands helm-lsp-workspace-symbol)
+  (use-package lsp-ivy
+    :commands lsp-ivy-workspace-symbol)
 
   (use-package dap-mode
     :after lsp-mode
     :config (dap-auto-configure-mode))
+#+end_src
+
+*** DAP
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :config
+    (setq dap-auto-configure-features '(sessions locals controls tooltip))
+    (dap-ui-controls-mode 1))
 #+end_src
 
 ** Languages
@@ -244,7 +254,8 @@ selected window's buffer. So just duplicate this behavior
 
 *** Typescript
 #+begin_src emacs-lisp
-  (use-package typescript-mode)
+  (use-package typescript-mode
+    :hook (typescript-mode . lsp))
 
   (defun setup-tide-fn ()
     (interactive)
@@ -274,6 +285,14 @@ selected window's buffer. So just duplicate this behavior
 #+begin_src emacs-lisp
   (use-package yaml-mode)
 #+end_src
+
+*** OCaml
+#+begin_src emacs-lisp
+  (use-package tuareg
+    :mode (("\\.ocamlinit\\'" . tuareg-mode)))
+(use-package merlin)
+#+end_src
+
 
 * mu
 #+begin_src emacs-lisp
@@ -418,4 +437,11 @@ selected window's buffer. So just duplicate this behavior
 
   ;; (add-to-list 'display-buffer-alist `(,(rx bos "CAPTURE-" (* not-newline) eos)
   ;;                                      (display-buffer-pop-up-frame)))
+#+end_src
+
+** Verb HTTP Client
+#+begin_src emacs-lisp
+  (use-package verb
+    :config
+    (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 #+end_src
