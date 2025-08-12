@@ -6,20 +6,22 @@
     emacs-overlay.url = "github:nix-community/emacs-overlay/";
     home-manager.url = "github:nix-community/home-manager";
     niri.url = "github:sodiboo/niri-flake";
-    stylix = {
-      url = "github:danth/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+
+    stylix.url = "github:danth/stylix";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
+
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { home-manager, nixpkgs, niri, stylix, ... } @ inputs: {
+  outputs = { home-manager, nixpkgs, niri, zen-browser, stylix, ... } @ inputs: {
     nixosConfigurations = {
       catbrick = nixpkgs.lib.nixosSystem rec {
         system = "x86_64-linux";
         modules = [
           stylix.nixosModules.stylix
-          ./system.nix
           niri.nixosModules.niri
+          ./system.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "backup-";

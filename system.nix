@@ -6,6 +6,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./cachix.nix
   ];
 
   nixpkgs.overlays = [
@@ -145,13 +146,10 @@
   environment.systemPackages = with pkgs; [
     vim
     wget
-
     networkmanagerapplet
     git
-    wireguard-ui
-    wireguard-tools
-
     wineWowPackages.waylandFull
+    cachix
   ];
 
   # Enable the gnome-keyring secrets vault.
@@ -159,41 +157,34 @@
   services.gnome.gnome-keyring.enable = true;
   services.openssh.enable = true;
 
-  programs = {
-    nix-ld.enable = true;
-    fish.enable = true;
-    gnupg.agent = {
-      enable = true;
-    };
-    steam.enable = true;
-    hamster.enable = true;
-    niri = {
-      enable = true;
-      package = pkgs.niri-unstable;
-    };
+
+  programs.nix-ld.enable = true;
+  programs.fish.enable = true;
+  programs.gnupg.agent.enable = true;
+  programs.steam.enable = true;
+  programs.hamster.enable = true;
+  programs.niri = {
+    enable = true;
+    package = pkgs.niri-unstable;
   };
 
+  programs.virt-manager.enable = true;
   virtualisation.docker.enable = true;
   virtualisation.libvirtd.enable = true;
-  programs.virt-manager.enable = true;
 
   networking.firewall.checkReversePath = false;
 
   stylix = {
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-frappe.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/horizon-dark.yaml";
     image = ./bg-3.jpg;
     polarity = "dark";
     
     fonts.monospace.package = pkgs.nerd-fonts.fira-code;
     fonts.monospace.name = "FiraCode Nerd Font";
-
     fonts.sansSerif.package = pkgs.nerd-fonts.ubuntu;
     fonts.sansSerif.name = "Ubuntu Nerd Font";
-
-    # serifs are yucky
     fonts.serif = config.stylix.fonts.sansSerif;
-
     fonts.sizes.applications = 10;
     fonts.sizes.desktop = 12;
 
