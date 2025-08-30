@@ -9,12 +9,9 @@
 
     stylix.url = "github:danth/stylix";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
-
-    zen-browser.url = "github:0xc000022070/zen-browser-flake";
-    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { home-manager, nixpkgs, niri, zen-browser, stylix, ... } @ inputs: {
+  outputs = { home-manager, nixpkgs, niri, stylix, ... } @ inputs: {
     nixosConfigurations = {
       catbrick = nixpkgs.lib.nixosSystem rec {
         system = "x86_64-linux";

@@ -35,16 +35,15 @@ tooltip {
     border-radius: 9px;
     margin-top: 3px;
     margin-bottom: 3px;
-    margin-left: 0px;
+    margin-left: 3px;
     padding-left: 3px;
     padding-right: 3px;
-    margin-right: 0px;
-    color: @main-fg;
+    margin-right: 3px;
+    background: @main-fg;
 }
 
 #workspaces button.active {
     background: @wb-act-bg;
-    color: @wb-act-fg;
     margin-left: 3px;
     padding-left: 12px;
     padding-right: 12px;
@@ -53,7 +52,6 @@ tooltip {
 
 #workspaces button:hover {
     background: @wb-hvr-bg;
-    color: @wb-hvr-fg;
 }
 
 #taskbar button {
