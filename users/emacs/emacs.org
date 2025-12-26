@@ -5,6 +5,9 @@
 
 
 * Miscellanous Configuration
+#+begin_src emacs-lisp
+  (setq package-enable-at-startup nil)
+#+end_src
 ** Diminish Mode
 #+begin_src emacs-lisp
   (use-package diminish
@@ -42,11 +45,11 @@ Keep a custom file for =customize= functionality, keep it out of init.el
 
 ** Re-use windows for buffer changing
 #+begin_src emacs-lisp
-  ;; (customize-set-variable 'display-buffer-base-action
-  ;;                         '((display-buffer-reuse-window display-buffer-same-window)
-  ;;                           (reusable-frames . t)))
+  (customize-set-variable 'display-buffer-base-action
+                          '((display-buffer-reuse-window display-buffer-same-window)
+                            (reusable-frames . t)))
 
-  ;; (customize-set-variable 'even-window-sizes nil)
+  (customize-set-variable 'even-window-sizes nil)
 #+end_src
 
 ** initial buffer choice
@@ -84,36 +87,71 @@ selected window's buffer. So just duplicate this behavior
       (setq undo-tree-history-directory-alist (cl-acons "." save-dir nil)))
     (global-undo-tree-mode 1))
 
-  (use-package frames-only-mode
-    :custom
-    ((frames-only-mode-kill-frame-when-buffer-killed-buffer-list
-      `("*RefTeX Select*" "*Help*" "*Popup Help*" "*Completions*" (regexp . ,(rx bos "CAPTURE-"))))
-     (frames-only-mode-use-window-functions
-      (list #'calendar #'report-emacs-bug 'checkdoc-show-diagnostics 'checkdoc 'org-compile-file 'corfu-popupinfo--show 'org-capture 'org-insert-link)))
-    :init
-    (frames-only-mode t))
+  ;; (use-package frames-only-mode
+  ;;   :custom
+  ;;   ((frames-only-mode-kill-frame-when-buffer-killed-buffer-list
+  ;;     `("*RefTeX Select*"
+  ;;       "*Help*"
+  ;;       "*Popup Help*"
+  ;;       "*Completions*"
+  ;;       (regexp . ,(rx bos "CAPTURE-"))))
+  ;;    (frames-only-mode-use-window-functions
+  ;;     (list #'calendar
+  ;;           #'report-emacs-bug
+  ;;           'checkdoc-show-diagnostics
+  ;;           'checkdoc
+  ;;           'org-compile-file
+  ;;           'corfu-popupinfo--show
+  ;;           'org-capture
+  ;;           'org-insert-link)))
+  ;;   :init
+  ;;   (frames-only-mode t))
 
-  (use-package shackle
-    :diminish t
-    :custom
-      (shackle-rules '(("\\*Apropos\\|Help\\|Occur\\|tide-references\\*" :regexp t :same t :select t :inhibit-window-quit t)
-  		   ("\\*magit" :regexp t :same t :select t)
-  		   ("\\*shell.*" :regexp t :same t :select t)
-  		   ("\\*Cargo.*" :regexp t :other t :select nil)
-  		   ("*Messages*" :select nil :other t)
-  		   ("*Proced*" :select t :same t)
-  		   ("*Buffer List*" :select t :same t)
-  		   ("*Messages*" :same nil :other t :select t :inhibit-window-quit t)))
-      (shackle-default-rule nil)
-    :config
-    (shackle-mode 1))
+  ;; (use-package shackle
+  ;;   :diminish t
+  ;;   :custom
+  ;;     (shackle-rules '(("\\*Apropos\\|Help\\|Occur\\|tide-references\\*" :regexp t :same t :select t :inhibit-window-quit t)
+  ;; 		   ("\\*magit" :regexp t :same t :select t)
+  ;; 		   ("\\*shell.*" :regexp t :same t :select t)
+  ;; 		   ("\\*Cargo.*" :regexp t :other t :select nil)
+  ;; 		   ("*Messages*" :select nil :other t)
+  ;; 		   ("*Proced*" :select t :same t)
+  ;; 		   ("*Buffer List*" :select t :same t)
+  ;; 		   ("*Messages*" :same nil :other t :select t :inhibit-window-quit t)))
+  ;;     (shackle-default-rule nil)
+  ;;   :config
+  ;;   (shackle-mode 1))
 #+end_src
+** Window Management
+#+begin_src emacs-lisp
+  (use-package zoom
+    :custom (zoom-size '(0.618 . 0.618))
+    :config
+    (zoom-mode))
+
+  (use-package ace-window
+    :custom (aw-scope 'frame)
+    :config
+    (global-set-key (kbd "M-o") 'ace-window))
+#+end_src
+
 * Aesthetics
 #+begin_src emacs-lisp
-  (use-package catppuccin-theme
+  (use-package doom-themes
+    :custom
+    ;; Global settings (defaults)
+    (doom-themes-enable-bold t)   ; if nil, bold is universally disabled
+    (doom-themes-enable-italic nil) ; if nil, italics is universally disabled
+    ;; for treemacs users
+    (doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
     :config
-    (setq catppuccin-flavor 'frappe)
-    (catppuccin-reload))
+    (load-theme 'doom-one t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
 
   (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -293,35 +331,11 @@ selected window's buffer. So just duplicate this behavior
 (use-package merlin)
 #+end_src
 
-
-* mu
-#+begin_src emacs-lisp
-  (use-package mu4e)
-#+end_src
-
 * Meow Mode
+** Keybindings
 #+begin_src emacs-lisp
-  (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-    (meow-motion-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev)
-     '("<escape>" . ignore))
-    (meow-leader-define-key
-     ;; Use SPC (0-9) for digit arguments.
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("/" . meow-keypad-describe-key)
-     '("?" . meow-cheatsheet))
-    (meow-normal-define-key
+  (defvar local/meow-normal
+    (list
      '("0" . meow-expand-0)
      '("9" . meow-expand-9)
      '("8" . meow-expand-8)
@@ -383,7 +397,38 @@ selected window's buffer. So just duplicate this behavior
      '("z" . meow-pop-selection)
      '("'" . repeat)
      '("<escape>" . ignore)))
-
+    
+  (defvar local/meow-leader    ;; Use SPC (0-9) for digit arguments.
+    (list
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key)
+     '("?" . meow-cheatsheet)
+     '("o" . ace-window)
+     (cons "l" lsp-command-map)))
+#+end_src
+** Setupfn
+#+begin_src emacs-lisp
+  (defun meow-setup ()
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (setq meow-cursor-type-lsp 'hollow)
+    (meow-motion-define-key
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("<escape>" . ignore))
+    (apply 'meow-leader-define-key local/meow-leader)
+    (apply 'meow-normal-define-key local/meow-normal))
+#+end_src
+** Use
+#+begin_src emacs-lisp
   (use-package meow-tree-sitter)
   (use-package meow
     :config
@@ -399,10 +444,6 @@ selected window's buffer. So just duplicate this behavior
   (add-hook 'org-mode-hook 'org-indent-mode)
 
   (org-clock-persistence-insinuate)
-
-  (define-key global-map "\C-cl" 'org-store-link)
-  (define-key global-map "\C-ca" 'org-agenda)
-  (define-key global-map "\C-cc" 'org-capture)
 
   (setq org-log-done t
         org-clock-persist 'historycc
@@ -430,18 +471,6 @@ selected window's buffer. So just duplicate this behavior
                                       "NOTE"       ;; Its a note
                                       )))
 
-  (require 'org-crypt)
-  (org-crypt-use-before-save-magic)
-  (setq org-tags-exclude-from-inheritance '("crypt"))
-  (setq org-crypt-key nil)
-
   ;; (add-to-list 'display-buffer-alist `(,(rx bos "CAPTURE-" (* not-newline) eos)
   ;;                                      (display-buffer-pop-up-frame)))
-#+end_src
-
-** Verb HTTP Client
-#+begin_src emacs-lisp
-  (use-package verb
-    :config
-    (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 #+end_src

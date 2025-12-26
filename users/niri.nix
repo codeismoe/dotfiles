@@ -5,14 +5,14 @@
     prefer-no-csd = true;
     spawn-at-startup = [
       { command = ["systemctl --user reset-failed waybar.service"]; }
-      { command = ["swww img ${config.stylix.image}" ]; }
+      { command = ["${pkgs.swww}/bin/swww img ${config.stylix.image}" ]; }
     ];
 
     layout = {
       gaps = 2;
       struts.left = 2;
       struts.right = 2;
-      border.width = 2;
+      border.width = 3;
       always-center-single-column = true;
       empty-workspace-above-first = false;
       tab-indicator = {
@@ -87,9 +87,7 @@
           "Mod+Space".action = spawn "fuzzel";
           "Mod+O".action = toggle-overview;
 
-          "Mod+Shift+Print".action = screenshot;
           "Print".action.screenshot-screen = [ ];
-          "Mod+Print".action = screenshot-window;
 
           "XF86AudioRaiseVolume".action = sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+";
           "XF86AudioLowerVolume".action = sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-";
@@ -145,9 +143,26 @@
           "Mod+Shift+Escape".action = toggle-keyboard-shortcuts-inhibit;
           "Mod+Shift+Q".action = quit;
           "Mod+Shift+P".action = spawn "swaylock";
+          "Mod+N".action = focus-monitor-next;
+          "Mod+Shift+N".action = move-window-to-monitor-next;
         }
       ];
-    outputs."eDP-1".scale = 1.0;
+    outputs."eDP-1" = {
+      scale = 1.0;
+      position = {
+        x = 0;
+        y = 360;
+      };
+    };
+    outputs."HDMI-A-2" = {
+      scale = 1.0;
+      focus-at-startup = true;
+      position = {
+        x = 1920;
+        y = 0;
+      };
+
+    };
     environment."NIXOS_OZONE_WL" = "1";
     xwayland-satellite = {
       enable = true;

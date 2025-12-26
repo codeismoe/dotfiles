@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     emacs-overlay.url = "github:nix-community/emacs-overlay/";
     home-manager.url = "github:nix-community/home-manager";
+
     niri.url = "github:sodiboo/niri-flake";
 
     stylix.url = "github:danth/stylix";
@@ -18,14 +19,14 @@
         modules = [
           stylix.nixosModules.stylix
           niri.nixosModules.niri
-          ./system.nix
+          ./computers/catbrick-system.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.backupFileExtension = "backup-";
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users = {
-              catbrick = import ./users/catbrick.nix { inherit inputs; };
+              catbrick = import ./users/user.nix { inherit inputs; };
             };
           }
         ];

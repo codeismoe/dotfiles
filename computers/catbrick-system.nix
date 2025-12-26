@@ -5,8 +5,7 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
-    ./cachix.nix
+    ./catbrick-hardware.nix
   ];
 
   nixpkgs.overlays = [
@@ -25,7 +24,19 @@
     enable = true;
     enable32Bit = true;
   };
-
+  services.xserver.videoDrivers = ["nvidia"];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = false;
+    powerManagement.finegrained = false;
+    open = true;
+    nvidiaSettings = true;
+  };
+  hardware.nvidia.prime = {
+    intelBusId = "PCI:0:2:0";
+    nvidiaBusId = "PCI:1:0:0";
+    sync.enable = true;
+  };
   hardware.bluetooth.enable = true;
 
   networking.hostName = "catbrick";
@@ -52,7 +63,12 @@
   services.xserver = {
     enable = true;
   };
-
+  services.avahi = {
+    publish.enable = true;
+    publish.userServices = true;
+    enable = true;
+    openFirewall = true;
+  };
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -77,7 +93,7 @@
     nerd-fonts.fira-code
     source-sans
     noto-fonts
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     iosevka
     fira-code
     fira-code-symbols
@@ -86,27 +102,9 @@
   ]);
 
   services.dbus.enable = true;
-
-  environment.gnome.excludePackages = (with pkgs; [
-    gnome-photos
-    gnome-tour
-    cheese
-    gnome-music
-    gedit # text editor
-    epiphany # web browser
-    geary # email reader
-    gnome-characters
-    tali # poker game
-    iagno # go game
-    hitori # sudoku game
-    atomix # puzzle game
-    yelp # Help view
-    gnome-contacts
-    gnome-initial-setup
-  ]);
-            
+  services.power-profiles-daemon.enable = true;
   services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
+  services.udisks2.enable = true;
   programs.dconf.enable = true;
 
   xdg.icons.enable = true;
@@ -172,16 +170,46 @@
   virtualisation.docker.enable = true;
   virtualisation.libvirtd.enable = true;
 
-  networking.firewall.checkReversePath = false;
+  services.samba = {
+    package = pkgs.samba4Full;
+    enable = true;
+    openFirewall = true;
+    settings = {
+      global = {
+        "workgroup" = "WORKGROUP";
+        "server string" = "SMBNIXSRV";
+        "netbios name" = "SMBNIXNB";
+        "security" = "user";
+        "hosts allow" = "192.168.1. 127.0.0.1 localhost";
+        "hosts deny" = "0.0.0.0/0";
+        "guest account" = "nobody";
+        "map to guest" = "Bad User";
+      };
+      "public" = {
+        "path" = "/mnt/Shares/Public/";
+        "browseable" = "yes";
+        "read only" = "yes";
+        "guest ok" = "yes";
+      };
+    };
+  };
+
+  services.samba-wsdd = {
+    enable = true;
+    openFirewall = true;
+  };
+
+  networking.firewall.enable = true;
+  networking.firewall.allowPing = true;
 
   stylix = {
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/horizon-dark.yaml";
-    image = ./bg-3.jpg;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/everforest.yaml";
+    image = ../bg-3.jpg;
     polarity = "dark";
     
-    fonts.monospace.package = pkgs.nerd-fonts.fira-code;
-    fonts.monospace.name = "FiraCode Nerd Font";
+    fonts.monospace.package = pkgs.nerd-fonts.iosevka;
+    fonts.monospace.name = "Iosevka Nerd Font";
     fonts.sansSerif.package = pkgs.nerd-fonts.ubuntu;
     fonts.sansSerif.name = "Ubuntu Nerd Font";
     fonts.serif = config.stylix.fonts.sansSerif;
@@ -193,7 +221,7 @@
     cursor.size = 12;
   };
 
-
+  services.emacs.defaultEditor = true;
   
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
