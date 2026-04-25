@@ -9,7 +9,7 @@
   ];
 
   home = {
-    stateVersion = "23.11";
+    stateVersion = "25.11";
     username = "catbrick";
     homeDirectory = "/home/catbrick";
     sessionVariables.NIXOS_OZONE_WL = "1";
@@ -19,7 +19,12 @@
       vlc
       vscode
       blender
-      
+      zoom-us
+      gnuplot
+      zotero
+      vintagestory
+      discord
+
       any-nix-shell
       mpc
       ncmpcpp
@@ -27,26 +32,34 @@
       signal-desktop
       # is it secure? no. Do I care? No.
       protonvpn-gui
-      devcontainer
       nautilus
       swww
 
       # cli
-      (aspellWithDicts (dicts: with dicts; [en en-computers en-science]))
+      hunspell
+      aspell
+      aspellDicts.en
+      hunspellDicts.en_US-large
       wl-clipboard
-      discord
-      
+
+      libreoffice
+      audacity
+
       curl
       file
       htop
       ispell
       jq
-      neofetch
+      fastfetch
       pass
       ripgrep
+      coreutils
       texliveFull
       unzip
+      gnutls
 
+      pandoc
+      graphviz
 
       # aesthetics
       catppuccin
@@ -54,28 +67,34 @@
       catppuccin-gtk
       catppuccin-qt5ct
       roboto
-      tela-icon-theme
+
+      # programming
+      # python3
+      haskellPackages.lsp
+      nodejs
+      haskellPackages.hoogle
+      zulu25
+      nixfmt
+      cabal-install
+      rustup
+      sbcl
+      shellcheck
+      languagetool
 
       # applications
       deluge
       firefox
       gimp
+      octaveFull
       google-chrome
       mpv
       pavucontrol
       qemu
       wdisplays
-      nicotine-plus
       brightnessctl
       ghostscript
       gnupg
-
-      # gaymes
-      nethack
-
       xwayland-satellite-unstable
-
-      # development
       gcc
       gnumake
     ];
@@ -86,6 +105,8 @@
   programs.tmux = {
     enable = true;
     escapeTime = 0;
+    historyLimit = 100000;
+    mouse = true;
   };
 
   programs.direnv = {
@@ -116,6 +137,7 @@
   };
 
   stylix.targets.emacs.enable = false;
+
   services.emacs.enable = true;
 
   programs.fuzzel.enable = true;
@@ -138,8 +160,6 @@
     '';
   };
 
-  services.swayidle.enable = true; # idle management daemon
   services.polkit-gnome.enable = true; # polkit
-  
   fonts.fontconfig.enable = true;
 }

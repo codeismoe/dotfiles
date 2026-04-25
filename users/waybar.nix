@@ -8,8 +8,10 @@
       "spacing" = 4;
       "modules-left" = [
         "pulseaudio"
-        "tray"
         "battery"
+        "backlight"
+        "power-profiles-daemon"
+        "tray"
       ];
       "modules-center" = [
         "niri/workspaces"
@@ -23,6 +25,7 @@
         "disable-scroll" = true;
         "all-outputs" = false;
         "warp-on-scroll" = false;
+        "disable-click" = true;
         "format" = "{icon}";
         "format-icons" = {
           "active" = " ";
@@ -31,14 +34,16 @@
         };
       };
       "niri/window" = {
-        "format" = "{}";
+        "separate-outputs" = true;
+        "icon" = true;
       };
       "tray" = {
         "spacing" = 10;
       };
       "clock" = {
-        "tooltip-format" = "<big>{ =%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-        "format-alt" = "{ =%Y-%m-%d}";
+        "interval" = 60;
+        "tooltip" = true;
+        "tooltip-format" = "{ =%Y-%m-%d}";
       };
       "cpu" = {
         "format" = "{usage}% ";
@@ -48,7 +53,7 @@
         "format" = "{}% ";
       };
       "backlight" = {
-        "format" = "{percent}% {icon}";
+        "format" = "{percent}% {icon} ";
         "format-icons" = ["" "" "" "" "" "" "" "" ""];
       };
       "battery" = {
@@ -56,24 +61,23 @@
           "warning" = 30;
           "critical" = 15;
         };
-        "format" = "{capacity}% {icon}";
-        "format-full" = "{capacity}% {icon}";
-        "format-charging" = "{capacity}% ";
-        "format-plugged" = "{capacity}% ";
-        "format-alt" = "{time} {icon}";
-
-        "format-icons" = ["" "" "" "" ""];
+        "format" = "{capacity}% {icon} ";
+        "format-full" = "{capacity}% {icon} ";
+        "format-charging" = "{capacity}%  ";
+        "format-plugged" = "{capacity}%  ";
+        "format-alt" = "{time} {icon} ";
+        "format-icons" = [" " " " " " " " " "];
       };
 
       "power-profiles-daemon" = {
-        "format" = "{icon}";
+        "format" = "{icon} ";
         "tooltip-format" = "Power profile = {profile}\nDriver = {driver}";
         "tooltip" = true;
         "format-icons" = {
-          "default" = "";
-          "performance" = "";
-          "balanced" = "";
-          "power-saver" = "";
+          "default" = " ";
+          "performance" = " ";
+          "balanced" = " ";
+          "power-saver" = " ";
         };
       };
 
@@ -108,6 +112,7 @@
     systemd.enable = true;
     settings = [waybar-settings];
     style = lib.mkAfter ''
+
       #workspaces button.empty {
         padding: 0px;
         border: 0px;
@@ -129,6 +134,11 @@
         margin-right: 3px;
         border-bottom: 3px solid @base08;
         color: @base08;
+     }
+
+     #window {
+        color: @base08;
+        border-bottom: 3px solid @base08;
      }
     '';
   };

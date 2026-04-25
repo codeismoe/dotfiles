@@ -81,7 +81,7 @@
             listToAttrs (pairs prefixes (prefix: pairs suffixes (suffix: [ (format prefix suffix) ])));
       in attrsets.mergeAttrsList [
         {
-          "Mod+E".action = sh "emacsclient -nc";
+          "Mod+E".action = sh "emacsclient -c -n -e '(switch-to-buffer nil)'";
           "Mod+Return".action = spawn "kitty";
           "Mod+Z".action = show-hotkey-overlay;
           "Mod+Space".action = spawn "fuzzel";
@@ -147,6 +147,14 @@
           "Mod+Shift+N".action = move-window-to-monitor-next;
         }
       ];
+    outputs."HDMI-A-1" = {
+      scale = 1.0;
+      focus-at-startup = true;
+      position = {
+        x = 1080;
+        y = 0;
+      };
+    };
     outputs."eDP-1" = {
       scale = 1.0;
       position = {
@@ -154,15 +162,7 @@
         y = 360;
       };
     };
-    outputs."HDMI-A-2" = {
-      scale = 1.0;
-      focus-at-startup = true;
-      position = {
-        x = 1920;
-        y = 0;
-      };
 
-    };
     environment."NIXOS_OZONE_WL" = "1";
     xwayland-satellite = {
       enable = true;

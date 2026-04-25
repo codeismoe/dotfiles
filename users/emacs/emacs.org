@@ -1,13 +1,15 @@
 #+TITLE: Emacs Configuration
 #+PROPERTY: header-args:emacs-lisp :tangle config.el
 #+PROPERTY: header-args :mkdirp yes :comments no
-# NOTE the tangle to config.el is a workaround for the nix emacs community overlay
+# the tangle to "config.el" is a workaround for the nix emacs community overlay
 
 
 * Miscellanous Configuration
 #+begin_src emacs-lisp
   (setq package-enable-at-startup nil)
+  (setq sentence-end-double-space nil)
 #+end_src
+
 ** Diminish Mode
 #+begin_src emacs-lisp
   (use-package diminish
@@ -62,7 +64,7 @@ selected window's buffer. So just duplicate this behavior
 #+end_src
 ** Spelling, bell, exec-path, indent, =yes-or-no-p=, etc
 #+begin_src emacs-lisp
-  (setq ispell-program-name "aspell")
+  (setq ispell-program-name "hunspell")
   (setq ring-bell-function 'ignore)
   (defalias 'yes-or-no-p #'y-or-n-p)
  (setq-default indent-tabs-mode nil)
@@ -87,47 +89,47 @@ selected window's buffer. So just duplicate this behavior
       (setq undo-tree-history-directory-alist (cl-acons "." save-dir nil)))
     (global-undo-tree-mode 1))
 
-  ;; (use-package frames-only-mode
-  ;;   :custom
-  ;;   ((frames-only-mode-kill-frame-when-buffer-killed-buffer-list
-  ;;     `("*RefTeX Select*"
-  ;;       "*Help*"
-  ;;       "*Popup Help*"
-  ;;       "*Completions*"
-  ;;       (regexp . ,(rx bos "CAPTURE-"))))
-  ;;    (frames-only-mode-use-window-functions
-  ;;     (list #'calendar
-  ;;           #'report-emacs-bug
-  ;;           'checkdoc-show-diagnostics
-  ;;           'checkdoc
-  ;;           'org-compile-file
-  ;;           'corfu-popupinfo--show
-  ;;           'org-capture
-  ;;           'org-insert-link)))
-  ;;   :init
-  ;;   (frames-only-mode t))
+  (use-package frames-only-mode
+    :custom
+    ((frames-only-mode-kill-frame-when-buffer-killed-buffer-list
+      `("*RefTeX Select*"
+        "*Help*"
+        "*Popup Help*"
+        "*Completions*"
+        (regexp . ,(rx bos "CAPTURE-"))))
+     (frames-only-mode-use-window-functions
+      (list #'calendar
+            #'report-emacs-bug
+            'checkdoc-show-diagnostics
+            'checkdoc
+            'org-compile-file
+            'corfu-popupinfo--show
+            'org-capture
+            'org-insert-link)))
+    :init
+    (frames-only-mode t))
 
-  ;; (use-package shackle
-  ;;   :diminish t
-  ;;   :custom
-  ;;     (shackle-rules '(("\\*Apropos\\|Help\\|Occur\\|tide-references\\*" :regexp t :same t :select t :inhibit-window-quit t)
-  ;; 		   ("\\*magit" :regexp t :same t :select t)
-  ;; 		   ("\\*shell.*" :regexp t :same t :select t)
-  ;; 		   ("\\*Cargo.*" :regexp t :other t :select nil)
-  ;; 		   ("*Messages*" :select nil :other t)
-  ;; 		   ("*Proced*" :select t :same t)
-  ;; 		   ("*Buffer List*" :select t :same t)
-  ;; 		   ("*Messages*" :same nil :other t :select t :inhibit-window-quit t)))
-  ;;     (shackle-default-rule nil)
-  ;;   :config
-  ;;   (shackle-mode 1))
+  (use-package shackle
+    :diminish t
+    :custom
+      (shackle-rules '(("\\*Apropos\\|Help\\|Occur\\|tide-references\\*" :regexp t :same t :select t :inhibit-window-quit t)
+  		   ("\\*magit" :regexp t :same t :select t)
+  		   ("\\*shell.*" :regexp t :same t :select t)
+  		   ("\\*Cargo.*" :regexp t :other t :select nil)
+  		   ("*Messages*" :select nil :other t)
+  		   ("*Proced*" :select t :same t)
+  		   ("*Buffer List*" :select t :same t)
+  		   ("*Messages*" :same nil :other t :select t :inhibit-window-quit t)))
+      (shackle-default-rule nil)
+    :config
+    (shackle-mode 1))
 #+end_src
 ** Window Management
 #+begin_src emacs-lisp
-  (use-package zoom
-    :custom (zoom-size '(0.618 . 0.618))
-    :config
-    (zoom-mode))
+  ;; (use-package zoom
+  ;;   :custom (zoom-size '(0.618 . 0.618))
+  ;;   :config
+  ;;   (zoom-mode))
 
   (use-package ace-window
     :custom (aw-scope 'frame)
@@ -137,7 +139,7 @@ selected window's buffer. So just duplicate this behavior
 
 * Aesthetics
 #+begin_src emacs-lisp
-  (use-package doom-themes
+  (use-package m-themes
     :custom
     ;; Global settings (defaults)
     (doom-themes-enable-bold t)   ; if nil, bold is universally disabled
@@ -145,7 +147,7 @@ selected window's buffer. So just duplicate this behavior
     ;; for treemacs users
     (doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
     :config
-    (load-theme 'doom-one t)
+    (load-theme 'doom-gruvbox)
 
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
@@ -160,22 +162,66 @@ selected window's buffer. So just duplicate this behavior
   (set-frame-font "Iosevka Nerd Font 12" nil t)
 #+end_src
 
-* Ivy
+* Vertico
 #+begin_src emacs-lisp
-  (use-package ivy
+  (use-package vertico
     :diminish t
-    :config
-    (setopt ivy-use-virtual-buffers t)
-    (setopt enable-recursive-minibuffers t)
-    (ivy-mode 1))
+    :init
+    (vertico-mode 1))
 
-  (use-package counsel
-    :diminish t
-    :config
-    (counsel-mode 1))
+  (use-package emacs
+    :custom
+    ;; Enable context menu. `vertico-multiform-mode' adds a menu in the minibuffer
+    ;; to switch display modes.
+    (context-menu-mode t)
+    ;; Support opening new minibuffers from inside existing minibuffers.
+    (enable-recursive-minibuffers t)
+    ;; Hide commands in M-x which do not work in the current mode.  Vertico
+    ;; commands are hidden in normal buffers. This setting is useful beyond
+    ;; Vertico.
+    (read-extended-command-predicate #'command-completion-default-include-p)
+    ;; Do not allow the cursor in the minibuffer prompt
+    (minibuffer-prompt-properties
+     '(read-only t cursor-intangible t face minibuffer-prompt)))
 
-  (use-package swiper
-    :bind ("C-s" . swiper))
+  (use-package orderless
+    :custom
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+    ;; (orderless-component-separator #'orderless-escapable-split-on-space)
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles partial-completion))))
+    (completion-category-defaults nil) ;; Disable defaults, use our settings
+    (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring
+
+  ;; (use-package counsel
+  ;;   :diminish t
+  ;;   :config
+  ;;   (counsel-mode 1))
+
+  ;; (use-package swiper
+  ;;   :bind ("C-s" . swiper))
+
+  ;; Enable rich annotations using the Marginalia package
+  (use-package marginalia
+    ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
+    ;; available in the *Completions* buffer, add it to the
+    ;; `completion-list-mode-map'.
+    :bind (:map minibuffer-local-map
+           ("M-A" . marginalia-cycle))
+
+    ;; The :init section is always executed.
+    :init
+
+    ;; Marginalia must be activated in the :init section of use-package such that
+    ;; the mode gets enabled right away. Note that this forces loading the
+    ;; package.
+    (marginalia-mode))
+
+  (use-package consult)
+  (use-package mct)
+  (use-package embark)
+  (use-package embark-consult)
 #+end_src
 
 * Programming
@@ -331,6 +377,10 @@ selected window's buffer. So just duplicate this behavior
 (use-package merlin)
 #+end_src
 
+*** Maxima
+#+begin_src emacs-lisp
+  (use-package maxima)
+#+end_src
 * Meow Mode
 ** Keybindings
 #+begin_src emacs-lisp
@@ -440,37 +490,90 @@ selected window's buffer. So just duplicate this behavior
  
 * Org Mode
 #+begin_src emacs-lisp
-  (add-hook 'org-mode-hook 'turn-on-auto-fill)
-  (add-hook 'org-mode-hook 'org-indent-mode)
+  (use-package org
+    :custom
+    (org-latex-classes
+     '(("apa"
+        "\\documentclass[stu,12pt,floatsintext,donotrepeattitle]{apa7}
+  [DEFAULT-PACKAGES]
+  \\usepackage[american]{babel}
+  \\usepackage{csquotes}
+  \\usepackage[]{biblatex}
+  \\DeclareLanguageMapping{american}{american-apa}
+  [PACKAGES]
+  [EXTRA]"
 
-  (org-clock-persistence-insinuate)
+        ("\\section{%s}" . "\\section*{%s}")
+        ("\\subsection{%s}" . "\\subsection*{%s}")
+        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+        ("\\paragraph{%s}" . "\\paragraph*{%s}")
+        ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+       ("article" "\\documentclass[11pt]{article}"
+        ("\\section{%s}" . "\\section*{%s}")
+        ("\\subsection{%s}" . "\\subsection*{%s}")
+        ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+        ("\\paragraph{%s}" . "\\paragraph*{%s}")
+        ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+       ("report" "\\documentclass[11pt]{report}"
+        ("\\part{%s}" . "\\part*{%s}") ("\\chapter{%s}" . "\\chapter*{%s}")
+        ("\\section{%s}" . "\\section*{%s}")
+        ("\\subsection{%s}" . "\\subsection*{%s}")
+        ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+       ("book" "\\documentclass[11pt]{book}" ("\\part{%s}" . "\\part*{%s}")
+        ("\\chapter{%s}" . "\\chapter*{%s}")
+        ("\\section{%s}" . "\\section*{%s}")
+        ("\\subsection{%s}" . "\\subsection*{%s}")
+        ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+    :config
+    (add-hook 'org-mode-hook 'visual-line-mode)
+    (add-hook 'org-mode-hook 'org-indent-mode)
+    (add-hook 'org-mode-hook 'flyspell-mode)
 
-  (setq org-log-done t
-        org-clock-persist 'historycc
-        org-directory "~/org/"
-        org-agenda-files (list "todo.org" "2025.org")
-        org-refile-targets '((nil . (:maxlevel 5)))
-        org-agenda-search-view-max-outline-level 3
-        org-capture-templates
-        '(("t" "Add Todo" entry (file+headline "todo.org" "Inbox")
-           "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n")
-          ("n" "Add Note" entry (file+headline "todo.org" "Inbox")
-           "** %?\n:PROPERTIES:\n:CATEGORY: Note\n:ENTERED: %u\n:END:\n"))
-        org-tags-exclude-from-inheritance (list "project")
-        org-todo-keywords '((sequence "TODO(t)"    ;; Later
-                                      "NEXT(n)"    ;; Now
-                                      "|"          ;;
-                                      "DONE(d!)"   ;; Completed
-                                      )
-                            (sequence "WAIT(w@/!)" ;; Waiting on someone else
-                                      "BLCK(b@/!)" ;; Blocked by something
-                                      "APPT"       ;; Is an Appointment
-                                      "FUTR"       ;; Maybe Someday
-                                      "|"          ;;
-                                      "CANC(c@)"   ;; Cancelled
-                                      "NOTE"       ;; Its a note
-                                      )))
+    (org-clock-persistence-insinuate)
 
-  ;; (add-to-list 'display-buffer-alist `(,(rx bos "CAPTURE-" (* not-newline) eos)
-  ;;                                      (display-buffer-pop-up-frame)))
+    (setq org-log-done t
+          org-clock-persist 'historycc
+          org-directory "~/org/"
+          org-agenda-files (list "todo.org" "2025.org")
+          org-refile-targets '((nil . (:maxlevel 5)))
+          org-agenda-search-view-max-outline-level 3
+          org-capture-templates
+          '(("t" "Add Todo" entry (file+headline "todo.org" "Inbox")
+             "** TODO %?\n:PROPERTIES:\n:ENTERED: %u\n:END:\n"))
+          org-tags-exclude-from-inheritance (list "project")
+          org-todo-keywords '((sequence "TODO(t)"    ;; Later
+                                        "NEXT(n)"    ;; Now
+                                        "|"          ;;
+                                        "DONE(d!)"   ;; Completed
+                                        )
+                              (sequence "WAIT(w@/!)" ;; Waiting on someone else
+                                        "BLCK(b@/!)" ;; Blocked by something
+                                        "|"          ;;
+                                        "CANC(c@)"   ;; Cancelled
+                                        )))
+    (org-babel-do-load-languages 'org-babel-load-languages
+                                 '((python . t)
+                                   (dot . t))))
+#+end_src
+** org-roam
+#+begin_src emacs-lisp
+  (use-package org-roam
+    :custom
+    (org-roam-directory (file-truename "~/org/roam"))
+    :bind
+    (("C-c n l" . org-roam-buffer-toggle)
+     ("C-c n f" . org-roam-node-find)
+     ("C-c n i" . org-roam-node-insert))
+    :config
+    (org-roam-db-autosync-mode))
+  (use-package org-roam-bibtex)
+  (use-package citar)
+
+  (use-package org-roam-ui
+      :after org-roam
+      :config
+      (setq org-roam-ui-sync-theme t
+            org-roam-ui-follow t
+            org-roam-ui-update-on-save t
+            org-roam-ui-open-on-start nil))
 #+end_src
