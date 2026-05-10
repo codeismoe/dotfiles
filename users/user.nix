@@ -17,23 +17,19 @@
 
     packages =  with pkgs; [
       vlc
-      vscode
       blender
-      zoom-us
       gnuplot
       zotero
       vintagestory
       discord
 
       any-nix-shell
-      mpc
-      ncmpcpp
       cantata
       signal-desktop
       # is it secure? no. Do I care? No.
-      protonvpn-gui
+      proton-vpn
       nautilus
-      swww
+      awww
 
       # cli
       hunspell
@@ -42,19 +38,15 @@
       hunspellDicts.en_US-large
       wl-clipboard
 
-      libreoffice
-      audacity
-
       curl
       file
       htop
       ispell
       jq
       fastfetch
-      pass
+      # pass
       ripgrep
       coreutils
-      texliveFull
       unzip
       gnutls
 
@@ -68,24 +60,11 @@
       catppuccin-qt5ct
       roboto
 
-      # programming
-      # python3
-      haskellPackages.lsp
-      nodejs
-      haskellPackages.hoogle
-      zulu25
-      nixfmt
-      cabal-install
-      rustup
-      sbcl
-      shellcheck
-      languagetool
-
       # applications
       deluge
       firefox
+      qbz
       gimp
-      octaveFull
       google-chrome
       mpv
       pavucontrol
@@ -143,7 +122,7 @@
   programs.fuzzel.enable = true;
   programs.swaylock.enable = true;
 
-  services.swww.enable = true;
+  services.awww.enable = true;
   services.lorri.enable = true;
   services.mako.enable = true;
   services.udiskie.enable = true;

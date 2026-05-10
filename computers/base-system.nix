@@ -1,6 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
 { config, pkgs, inputs, ... }:
 
 {
@@ -10,13 +7,10 @@
   nixpkgs.overlays = [
     inputs.emacs-overlay.overlay
     inputs.niri.overlays.niri
-    inputs.nix-matlab.overlay
-  ]; 
+  ];
   
 
-  nix = {
-    settings.experimental-features = [ "nix-command flakes" ];
-  };
+  nix.settings.experimental-features = [ "nix-command flakes" ];
 
   hardware.graphics = {
     enable = true;
@@ -121,26 +115,17 @@
     cachix
     swaylock
     swayidle
-
-    matlab
     mesa_glu
     ncurses
 
-    xorg.libXi
-    xorg.libXext
-    xorg.libXmu
-    xorg.libXp
-    xorg.libXpm
-    xorg.libXrandr
-    xorg.libXrender
-    xorg.libXt
-    xorg.libXtst
-    xorg.libXxf86vm
-    xorg.libX11
-    zlib
-    gdk-pixbuf
+    linuxPackages.nvidiaPackages.stable
+    cudatoolkit
   ];
 
+  # services.flatpak.enable = true;
+  # services.flatpak.packages = [
+  #   "net.waterfox.waterfox"
+  # ];
   services.gnome.gnome-keyring.enable = true;
   services.openssh.enable = true;
   
@@ -204,7 +189,7 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/everforest.yaml";
     image = ../bg-3.jpg;
     polarity = "dark";
-    
+
     fonts.monospace.package = pkgs.nerd-fonts.iosevka;
     fonts.monospace.name = "Iosevka Nerd Font";
     fonts.sansSerif.package = pkgs.nerd-fonts.ubuntu;
@@ -220,5 +205,5 @@
 
   services.emacs.defaultEditor = true;
   
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "26.05";
 }

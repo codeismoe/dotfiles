@@ -9,6 +9,8 @@
       ./base-system.nix
     ];
 
+  # nixpkgs.config.cudaSupport = true;
+
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [  "kvm-intel" ];
@@ -40,21 +42,19 @@
 
   services.xserver.videoDrivers = ["modesetting" "nvidia" ];
   powerManagement.enable = true;
+  services.graphical-desktop.enable = lib.mkDefault true;
+  hardware.graphics.extraPackages = with pkgs; [
+      intel-media-driver
+  ];
 
   hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;      # crashes on idle if set to true
-    powerManagement.finegrained = false; # crashes on idle if set to true
     open = true;
-    nvidiaSettings = true;
-    
     prime = {
       offload.enable = true;
       offload.enableOffloadCmd = true;
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:1:0:0";
     };
-    package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
   networking.hostName = "catbrick";
