@@ -1,4 +1,3 @@
-{ inputs }:
 { config, pkgs, lib, ... }:
 
 {
@@ -26,12 +25,10 @@
       any-nix-shell
       cantata
       signal-desktop
-      # is it secure? no. Do I care? No.
-      proton-vpn
-      nautilus
-      awww
 
-      # cli
+      protonvpn-gui
+      nautilus
+
       hunspell
       aspell
       aspellDicts.en
@@ -44,11 +41,9 @@
       ispell
       jq
       fastfetch
-      # pass
+      pass
       ripgrep
-      coreutils
       unzip
-      gnutls
 
       pandoc
       graphviz
@@ -73,9 +68,6 @@
       brightnessctl
       ghostscript
       gnupg
-      xwayland-satellite-unstable
-      gcc
-      gnumake
     ];
   };
 
@@ -115,30 +107,29 @@
     shellIntegration.enableFishIntegration = true;
   };
 
-  stylix.targets.emacs.enable = false;
+  # stylix.targets.emacs.enable = false;
 
   services.emacs.enable = true;
 
   programs.fuzzel.enable = true;
   programs.swaylock.enable = true;
 
-  services.awww.enable = true;
   services.lorri.enable = true;
   services.mako.enable = true;
   services.udiskie.enable = true;
   services.gpg-agent.enable = true;
 
-  services.mpd = {
-    enable = true;
-    musicDirectory = "~/Music/";
-    extraConfig = ''
-      audio_output {
-        type "pipewire"
-        name "Pipewire"
-      }
-    '';
-  };
+  # services.mpd = {
+  #   enable = true;
+  #   musicDirectory = "~/Music/";
+  #   extraConfig = ''
+  #     audio_output {
+  #       type "pipewire"
+  #       name "Pipewire"
+  #     }
+  #   '';
+  # };
 
-  services.polkit-gnome.enable = true; # polkit
+  services.polkit-gnome.enable = true;
   fonts.fontconfig.enable = true;
 }

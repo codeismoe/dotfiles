@@ -1,24 +1,16 @@
 {
   description = "NixOS configuration";
 
-  nixConfig = {
-    substituters = [ "https://cache.nixos-cuda.org" ];
-    trusted-public-keys = [ "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=" ];
-  };
-
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
 
-    emacs-overlay.url = "github:nix-community/emacs-overlay/";
-    emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
-
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     niri.url = "github:sodiboo/niri-flake";
     niri.inputs.nixpkgs.follows = "nixpkgs";
 
-    stylix.url = "github:danth/stylix";
+    stylix.url = "github:nix-community/stylix/release-25.11";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
 
     # nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=latest";
@@ -31,7 +23,6 @@
         modules = [
           stylix.nixosModules.stylix
           niri.nixosModules.niri
-          # nix-flatpak.nixosModules.nix-flatpak
           ./computers/catbrick-system.nix
           home-manager.nixosModules.home-manager
           {
@@ -39,7 +30,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users = {
-              catbrick = import ./users/user.nix { inherit inputs; };
+              catbrick = import ./users/user.nix;
             };
           }
         ];

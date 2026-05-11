@@ -5,7 +5,6 @@
     prefer-no-csd = true;
     spawn-at-startup = [
       { command = ["systemctl --user reset-failed waybar.service"]; }
-      { command = ["${pkgs.swww}/bin/swww img ${config.stylix.image}" ]; }
     ];
 
     layout = {

@@ -5,25 +5,30 @@
   ];
 
   nixpkgs.overlays = [
-    inputs.emacs-overlay.overlay
     inputs.niri.overlays.niri
   ];
-  
+
+  nixpkgs.config.allowUnfree = true;
 
   nix.settings.experimental-features = [ "nix-command flakes" ];
+  nix.settings.substituters = [
+    "https://cache.nixos-cuda.org"
+    "https://nix-community.cachix.org"
+    "https://cache.nixos.org/"
+  ];
+
+  nix.settings.trusted-public-keys = [
+    "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+  ];
 
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
   };
   hardware.bluetooth.enable = true;
-
-
   networking.networkmanager.enable = true;
-
   time.timeZone = "America/New_York";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
@@ -37,7 +42,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
   };
@@ -46,18 +50,9 @@
     variant = "";
   };
 
-  services.avahi = {
-    publish.enable = true;
-    publish.userServices = true;
-    enable = true;
-    openFirewall = true;
-  };
-
   services.blueman.enable = true;
   
-  # Enable sound with pipewire.
   services.pulseaudio.enable = false;
-  security.pam.services.swaylock = {};
   security.rtkit.enable = true;
 
   # security.pki.certificateFiles = [
@@ -88,7 +83,10 @@
 
   services.dbus.enable = true;
   services.power-profiles-daemon.enable = true;
-  services.displayManager.gdm.enable = true;
+  services.displayManager.gdm = {
+    enable = true;
+    wayland = true;
+  };
   services.desktopManager.gnome.enable = true;
   services.gnome.core-apps.enable = false;
   services.gnome.core-developer-tools.enable = false;
@@ -101,11 +99,10 @@
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    # extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
 
-  nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
     vim
@@ -122,10 +119,6 @@
     cudatoolkit
   ];
 
-  # services.flatpak.enable = true;
-  # services.flatpak.packages = [
-  #   "net.waterfox.waterfox"
-  # ];
   services.gnome.gnome-keyring.enable = true;
   services.openssh.enable = true;
   
@@ -152,35 +145,6 @@
     };
   };
 
-  # services.samba = {
-  #   package = pkgs.samba4Full;
-  #   enable = true;
-  #   openFirewall = true;
-  #   settings = {
-  #     global = {
-  #       "workgroup" = "WORKGROUP";
-  #       "server string" = "SMBNIXSRV";
-  #       "netbios name" = "SMBNIXNB";
-  #       "security" = "user";
-  #       "hosts allow" = "192.168.1. 127.0.0.1 localhost";
-  #       "hosts deny" = "0.0.0.0/0";
-  #       "guest account" = "nobody";
-  #       "map to guest" = "Bad User";
-  #     };
-  #     "public" = {
-  #       "path" = "/mnt/Shares/Public/";
-  #       "browseable" = "yes";
-  #       "read only" = "yes";
-  #       "guest ok" = "yes";
-  #     };
-  #   };
-  # };
-
-  # services.samba-wsdd = {
-  #   enable = true;
-  #   openFirewall = true;
-  # };
-
   networking.firewall.enable = true;
   networking.firewall.allowPing = true;
 
@@ -205,5 +169,5 @@
 
   services.emacs.defaultEditor = true;
   
-  system.stateVersion = "26.05";
+  system.stateVersion = "25.11";
 }
